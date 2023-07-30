@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watchAll",
     "lint": "eslint --ignore-path .eslintignore --no-error-on-unmatched-pattern --ext .js, .ts .",
     "lint-staged": "npx lint-staged",
     "prepare": "husky install"
