@@ -36,4 +36,22 @@ describe('AddPlant UseCase', () => {
 
     expect(addPlantRepositoryMock.input).toEqual(plant)
   })
+
+  it('should throw if AddPlantRepository throws', async () => {
+    const addPlantRepositoryMock = new AddPlantRepositoryMock()
+    jest.spyOn(addPlantRepositoryMock, 'load').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const sut = new AddPlant(addPlantRepositoryMock)
+
+    const promise = sut.perform({
+      id: 'any_id',
+      name: 'any_plant',
+      description: 'any_plant_description',
+      waterTips: 'any_water_tips',
+      photo: 'any_photo',
+    })
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
