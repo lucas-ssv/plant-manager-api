@@ -9,8 +9,9 @@ export class DbAddPlant implements AddPlant {
     private readonly checkPlantExistsRepository: any
   ) {}
 
-  async perform(input: Plant): Promise<void> {
+  async perform(input: Plant): Promise<boolean> {
     await this.checkPlantExistsRepository.some(input.id)
     await this.addPlantRepository.load(input)
+    return true
   }
 }

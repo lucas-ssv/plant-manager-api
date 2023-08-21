@@ -9,10 +9,11 @@ interface CheckPlantExistsRepository {
 
 class CheckPlantExistsRepositorySpy implements CheckPlantExistsRepository {
   plantId?: string
+  output = false
 
   async some(plantId: string): Promise<boolean> {
     this.plantId = plantId
-    return false
+    return this.output
   }
 }
 
@@ -72,5 +73,14 @@ describe('AddPlant UseCase', () => {
     await sut.perform(plant)
 
     expect(checkPlantExistsRepositorySpy.plantId).toBe(plant.id)
+  })
+
+  it('should return true if CheckPlantExistsRepository returns true', async () => {
+    const { sut, checkPlantExistsRepositorySpy } = makeSut()
+    checkPlantExistsRepositorySpy.output = true
+
+    const isPlantExists = await sut.perform(mockAddPlantParams())
+
+    expect(isPlantExists).toBe(true)
   })
 })
