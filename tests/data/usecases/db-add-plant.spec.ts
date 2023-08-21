@@ -3,10 +3,23 @@ import { DbAddPlant } from '@/data/usecases'
 import { AddPlantRepositoryMock } from '@/tests/data/mocks'
 import { mockAddPlantParams } from '@/tests/domain/mocks'
 
+interface SutTypes {
+  sut: DbAddPlant
+  addPlantRepositoryMock: AddPlantRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+  const addPlantRepositoryMock = new AddPlantRepositoryMock()
+  const sut = new DbAddPlant(addPlantRepositoryMock)
+  return {
+    sut,
+    addPlantRepositoryMock,
+  }
+}
+
 describe('AddPlant UseCase', () => {
   it('should call AddPlantRepository with correct data', async () => {
-    const addPlantRepositoryMock = new AddPlantRepositoryMock()
-    const sut = new DbAddPlant(addPlantRepositoryMock)
+    const { sut, addPlantRepositoryMock } = makeSut()
     const plant = mockAddPlantParams()
 
     await sut.perform(plant)
@@ -15,8 +28,7 @@ describe('AddPlant UseCase', () => {
   })
 
   it('should call AddPlantRepository only once', async () => {
-    const addPlantRepositoryMock = new AddPlantRepositoryMock()
-    const sut = new DbAddPlant(addPlantRepositoryMock)
+    const { sut, addPlantRepositoryMock } = makeSut()
 
     await sut.perform(mockAddPlantParams())
 
@@ -24,11 +36,10 @@ describe('AddPlant UseCase', () => {
   })
 
   it('should throw if AddPlantRepository throws', async () => {
-    const addPlantRepositoryMock = new AddPlantRepositoryMock()
+    const { sut, addPlantRepositoryMock } = makeSut()
     jest.spyOn(addPlantRepositoryMock, 'load').mockImplementationOnce(() => {
       throw new Error()
     })
-    const sut = new DbAddPlant(addPlantRepositoryMock)
 
     const promise = sut.perform(mockAddPlantParams())
 
