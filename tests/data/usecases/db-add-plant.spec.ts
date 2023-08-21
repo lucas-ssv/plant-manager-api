@@ -1,18 +1,15 @@
 import { DbAddPlant } from '@/data/usecases'
+import { type CheckPlantExistsRepository } from '@/data/contracts'
 
 import { AddPlantRepositoryMock } from '@/tests/data/mocks'
 import { mockAddPlantParams } from '@/tests/domain/mocks'
 
-interface CheckPlantExistsRepository {
-  some: (plantId: string) => Promise<boolean>
-}
-
 class CheckPlantExistsRepositorySpy implements CheckPlantExistsRepository {
-  plantId?: string
+  name?: string
   output = false
 
-  async some(plantId: string): Promise<boolean> {
-    this.plantId = plantId
+  async some(name: string): Promise<boolean> {
+    this.name = name
     return this.output
   }
 }
@@ -57,7 +54,7 @@ describe('AddPlant UseCase', () => {
 
   it('should throw if AddPlantRepository throws', async () => {
     const { sut, addPlantRepositoryMock } = makeSut()
-    jest.spyOn(addPlantRepositoryMock, 'load').mockImplementationOnce(() => {
+    jest.spyOn(addPlantRepositoryMock, 'add').mockImplementationOnce(() => {
       throw new Error()
     })
 
@@ -72,7 +69,7 @@ describe('AddPlant UseCase', () => {
 
     await sut.perform(plant)
 
-    expect(checkPlantExistsRepositorySpy.plantId).toBe(plant.id)
+    expect(checkPlantExistsRepositorySpy.name).toBe(plant.name)
   })
 
   it('should return true if CheckPlantExistsRepository returns true', async () => {
@@ -82,5 +79,13 @@ describe('AddPlant UseCase', () => {
     const isPlantExists = await sut.perform(mockAddPlantParams())
 
     expect(isPlantExists).toBe(true)
+  })
+
+  it('should return false on success', async () => {
+    const { sut } = makeSut()
+
+    const isPlantExists = await sut.perform(mockAddPlantParams())
+
+    expect(isPlantExists).toBe(false)
   })
 })

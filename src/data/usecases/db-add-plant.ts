@@ -1,17 +1,23 @@
-import { type Plant } from '@/domain/entities'
-import { type AddPlant } from '@/domain/usecases'
+import { type PlantParams, type AddPlant } from '@/domain/usecases'
 
-import { type AddPlantRepository } from '@/data/contracts'
+import {
+  type CheckPlantExistsRepository,
+  type AddPlantRepository,
+} from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
   constructor(
     private readonly addPlantRepository: AddPlantRepository,
-    private readonly checkPlantExistsRepository: any
+    private readonly checkPlantExistsRepository: CheckPlantExistsRepository
   ) {}
 
-  async perform(input: Plant): Promise<boolean> {
-    await this.checkPlantExistsRepository.some(input.id)
-    await this.addPlantRepository.load(input)
-    return true
+  async perform(input: PlantParams): Promise<boolean> {
+    const isPlantExists = await this.checkPlantExistsRepository.some(input.name)
+    let isValid = true
+    if (!isPlantExists) {
+      isValid = false
+      await this.addPlantRepository.add(input)
+    }
+    return isValid
   }
 }

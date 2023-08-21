@@ -1,5 +1,5 @@
-import { type Plant } from '@/domain/entities'
+import { type PlantParams } from '@/domain/usecases'
 
 export interface AddPlantRepository {
-  load: (input: Plant) => Promise<void>
+  add: (input: PlantParams) => Promise<void>
 }
