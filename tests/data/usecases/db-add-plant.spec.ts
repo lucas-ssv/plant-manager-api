@@ -3,17 +3,36 @@ import { DbAddPlant } from '@/data/usecases'
 import { AddPlantRepositoryMock } from '@/tests/data/mocks'
 import { mockAddPlantParams } from '@/tests/domain/mocks'
 
+interface CheckPlantExistsRepository {
+  some: (plantId: string) => Promise<boolean>
+}
+
+class CheckPlantExistsRepositorySpy implements CheckPlantExistsRepository {
+  plantId?: string
+
+  async some(plantId: string): Promise<boolean> {
+    this.plantId = plantId
+    return false
+  }
+}
+
 interface SutTypes {
   sut: DbAddPlant
   addPlantRepositoryMock: AddPlantRepositoryMock
+  checkPlantExistsRepositorySpy: CheckPlantExistsRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
   const addPlantRepositoryMock = new AddPlantRepositoryMock()
-  const sut = new DbAddPlant(addPlantRepositoryMock)
+  const checkPlantExistsRepositorySpy = new CheckPlantExistsRepositorySpy()
+  const sut = new DbAddPlant(
+    addPlantRepositoryMock,
+    checkPlantExistsRepositorySpy
+  )
   return {
     sut,
     addPlantRepositoryMock,
+    checkPlantExistsRepositorySpy,
   }
 }
 
@@ -44,5 +63,14 @@ describe('AddPlant UseCase', () => {
     const promise = sut.perform(mockAddPlantParams())
 
     await expect(promise).rejects.toThrowError()
+  })
+
+  it('should call CheckPlantExistsRepository with correct id', async () => {
+    const { sut, checkPlantExistsRepositorySpy } = makeSut()
+    const plant = mockAddPlantParams()
+
+    await sut.perform(plant)
+
+    expect(checkPlantExistsRepositorySpy.plantId).toBe(plant.id)
   })
 })
