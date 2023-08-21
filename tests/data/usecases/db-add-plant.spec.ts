@@ -88,4 +88,17 @@ describe('AddPlant UseCase', () => {
 
     expect(isPlantExists).toBe(false)
   })
+
+  it('should throw if CheckPlantExistsRepository throws', async () => {
+    const { sut, checkPlantExistsRepositorySpy } = makeSut()
+    jest
+      .spyOn(checkPlantExistsRepositorySpy, 'some')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.perform(mockAddPlantParams())
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
