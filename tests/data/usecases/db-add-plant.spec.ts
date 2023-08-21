@@ -1,18 +1,10 @@
 import { DbAddPlant } from '@/data/usecases'
-import { type CheckPlantExistsRepository } from '@/data/contracts'
 
-import { AddPlantRepositoryMock } from '@/tests/data/mocks'
 import { mockAddPlantParams } from '@/tests/domain/mocks'
-
-class CheckPlantExistsRepositorySpy implements CheckPlantExistsRepository {
-  name?: string
-  output = false
-
-  async some(name: string): Promise<boolean> {
-    this.name = name
-    return this.output
-  }
-}
+import {
+  AddPlantRepositoryMock,
+  CheckPlantExistsRepositorySpy,
+} from '@/tests/data/mocks'
 
 interface SutTypes {
   sut: DbAddPlant
