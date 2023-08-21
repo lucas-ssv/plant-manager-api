@@ -7,9 +7,10 @@ module.exports = {
     [
       'module-resolver',
       {
-        root: ['./src/'],
+        root: ['./'],
         alias: {
-          '@/*': './',
+          '@/*': './src/',
+          '@/tests/*': './tests/',
           underscore: 'lodash'
         }
       }
