@@ -1,38 +1,5 @@
-import { type PlantEnvironment } from '@/domain/entities/plant-environment'
-import { type LoadPlantEnvironments } from '@/domain/usecases/load-plant-environments'
-
-class DbLoadPlantEnvironments implements LoadPlantEnvironments {
-  constructor(
-    private readonly loadPlantEnvironmentsRepository: LoadPlantEnvironmentsRepository
-  ) {}
-
-  async perform(): Promise<PlantEnvironment[]> {
-    return await this.loadPlantEnvironmentsRepository.loadMany()
-  }
-}
-
-interface LoadPlantEnvironmentsRepository {
-  loadMany: () => Promise<PlantEnvironment[]>
-}
-
-class LoadPlantEnvironmentsRepositorySpy
-  implements LoadPlantEnvironmentsRepository
-{
-  callsCount = 0
-  output = mockPlantEnvironments()
-
-  async loadMany(): Promise<PlantEnvironment[]> {
-    this.callsCount++
-    return this.output
-  }
-}
-
-const mockPlantEnvironments = (): PlantEnvironment[] => [
-  {
-    key: 'any_key',
-    title: 'any_title',
-  },
-]
+import { DbLoadPlantEnvironments } from '@/data/usecases'
+import { LoadPlantEnvironmentsRepositorySpy } from '@/tests/data/mocks'
 
 describe('DbLoadPlantEnvironments UseCase', () => {
   it('should call LoadPlantEnvironmentsRepository only once', async () => {

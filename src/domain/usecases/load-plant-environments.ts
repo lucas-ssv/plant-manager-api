@@ -1,4 +1,4 @@
-import { type PlantEnvironment } from '@/domain/entities/plant-environment'
+import { type PlantEnvironment } from '@/domain/entities'
 
 export interface LoadPlantEnvironments {
   perform: () => Promise<PlantEnvironment[]>
