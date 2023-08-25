@@ -7,4 +7,5 @@ export const mockAddPlantParams = (): PlantParams => ({
   description: faker.word.words(),
   waterTips: faker.word.words(),
   photo: faker.internet.url(),
+  environments: [faker.lorem.word(), faker.lorem.word()],
 })

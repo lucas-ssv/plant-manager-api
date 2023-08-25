@@ -7,4 +7,5 @@ export interface PlantParams {
   description: string
   waterTips: string
   photo: string
+  environments: string[]
 }
