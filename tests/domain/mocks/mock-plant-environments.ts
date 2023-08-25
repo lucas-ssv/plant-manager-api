@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 
 export const mockPlantEnvironmentsModel = (): PlantEnvironment[] => [
   {
-    key: faker.lorem.word(),
+    id: faker.string.uuid(),
     title: faker.lorem.words(),
   },
 ]
