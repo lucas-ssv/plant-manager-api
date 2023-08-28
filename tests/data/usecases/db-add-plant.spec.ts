@@ -26,7 +26,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('AddPlant UseCase', () => {
+describe('DbAddPlant UseCase', () => {
   it('should call AddPlantRepository with correct data', async () => {
     const { sut, addPlantRepositoryMock } = makeSut()
     const plant = mockAddPlantParams()

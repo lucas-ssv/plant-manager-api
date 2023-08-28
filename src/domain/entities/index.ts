@@ -1,1 +1,1 @@
-export * from './plant-environment'
+export * from './environment'

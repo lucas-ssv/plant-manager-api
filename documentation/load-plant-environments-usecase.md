@@ -1,10 +1,9 @@
-# LoadPlantEnvironments UseCase
+# LoadEnvironments UseCase
 
 > ## Dados
 
 - Id do Ambiente
 - Título do Ambiente
-- Key do Ambiente (living_room)
 
 > ## Fluxo primário
 

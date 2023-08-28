@@ -1,2 +1,2 @@
 export * from './add-plant'
-export * from './load-plant-environments'
+export * from './load-environments'
