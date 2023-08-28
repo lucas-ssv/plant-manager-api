@@ -37,4 +37,18 @@ describe('DbLoadPlants UseCase', () => {
 
     expect(plants).toEqual(loadPlantsRepositorySpy.output)
   })
+
+  it('should throw if LoadPlantsRepository throws', async () => {
+    const loadPlantsRepositorySpy = new LoadPlantsRepositorySpy()
+    jest
+      .spyOn(loadPlantsRepositorySpy, 'loadMany')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+    const sut = new DbLoadPlants(loadPlantsRepositorySpy)
+
+    const promise = sut.perform()
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
