@@ -1,8 +1,8 @@
-import { type PlantEnvironment } from '@/domain/entities'
+import { type Environment } from '@/domain/entities'
 
 import { faker } from '@faker-js/faker'
 
-export const mockPlantEnvironmentsModel = (): PlantEnvironment[] => [
+export const mockEnvironmentsModel = (): Environment[] => [
   {
     id: faker.string.uuid(),
     title: faker.lorem.words(),
