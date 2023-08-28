@@ -29,5 +29,7 @@ module.exports = {
       }
     }
   },
-  rules: {}
+  rules: {
+    '@typescript-eslint/no-namespace': 'off'
+  }
 }

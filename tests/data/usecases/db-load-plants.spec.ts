@@ -1,28 +1,40 @@
-class DbLoadPlants {
-  constructor(
-    private readonly loadPlantsRepository: LoadPlantsRepositoryMock
-  ) {}
+import { type Plant } from '@/domain/entities'
+import { mockPlantModels } from '@/tests/domain/mocks'
 
-  async perform(): Promise<void> {
-    await this.loadPlantsRepository.loadMany()
+class DbLoadPlants {
+  constructor(private readonly loadPlantsRepository: LoadPlantsRepositorySpy) {}
+
+  async perform(): Promise<Plant[]> {
+    return await this.loadPlantsRepository.loadMany()
   }
 }
 
-class LoadPlantsRepositoryMock {
+class LoadPlantsRepositorySpy {
   callsCount = 0
+  output = mockPlantModels()
 
-  async loadMany(): Promise<void> {
+  async loadMany(): Promise<Plant[]> {
     this.callsCount++
+    return this.output
   }
 }
 
 describe('DbLoadPlants UseCase', () => {
   it('should call LoadPlantsRepository only once', async () => {
-    const loadPlantsRepositoryMock = new LoadPlantsRepositoryMock()
-    const sut = new DbLoadPlants(loadPlantsRepositoryMock)
+    const loadPlantsRepositorySpy = new LoadPlantsRepositorySpy()
+    const sut = new DbLoadPlants(loadPlantsRepositorySpy)
 
     await sut.perform()
 
-    expect(loadPlantsRepositoryMock.callsCount).toBe(1)
+    expect(loadPlantsRepositorySpy.callsCount).toBe(1)
+  })
+
+  it('should return a list of plants on success', async () => {
+    const loadPlantsRepositorySpy = new LoadPlantsRepositorySpy()
+    const sut = new DbLoadPlants(loadPlantsRepositorySpy)
+
+    const plants = await sut.perform()
+
+    expect(plants).toEqual(loadPlantsRepositorySpy.output)
   })
 })
