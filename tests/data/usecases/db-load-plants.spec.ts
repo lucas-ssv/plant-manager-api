@@ -1,23 +1,5 @@
-import { type Plant } from '@/domain/entities'
-import { mockPlantModels } from '@/tests/domain/mocks'
-
-class DbLoadPlants {
-  constructor(private readonly loadPlantsRepository: LoadPlantsRepositorySpy) {}
-
-  async perform(): Promise<Plant[]> {
-    return await this.loadPlantsRepository.loadMany()
-  }
-}
-
-class LoadPlantsRepositorySpy {
-  callsCount = 0
-  output = mockPlantModels()
-
-  async loadMany(): Promise<Plant[]> {
-    this.callsCount++
-    return this.output
-  }
-}
+import { DbLoadPlants } from '@/data/usecases'
+import { LoadPlantsRepositorySpy } from '@/tests/data/mocks'
 
 describe('DbLoadPlants UseCase', () => {
   it('should call LoadPlantsRepository only once', async () => {
