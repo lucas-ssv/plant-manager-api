@@ -6,6 +6,6 @@ export interface Plant {
   description: string
   waterTips: string
   photo: string
+  plantWaterFrequencyId: PlantWaterFrequency
   environments: Environment[]
-  plantWaterFrequency: PlantWaterFrequency
 }

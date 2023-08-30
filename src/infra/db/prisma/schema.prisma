@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Plant {
+  id String @id @default(uuid())
+  name String
+  description String
+  waterTips String
+  photo String
+  plantWaterFrequencyId String? @unique
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+
+  environments PlantEnvironment[]
+  PlantWaterFrequency PlantWaterFrequency? @relation(fields: [plantWaterFrequencyId], references: [id])
+}
+
+model Environment {
+  id String @id @default(uuid())
+  title String
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+
+  plants PlantEnvironment[]
+}
+
+model PlantWaterFrequency {
+  id String @id @default(uuid())
+  title String
+  time String
+  gap Int
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+
+  plant Plant?
+}
+
+model PlantEnvironment {
+  plantId String
+  environmentId String
+
+  plant Plant @relation(fields: [plantId], references: [id])
+  environment Environment @relation(fields: [environmentId], references: [id])
+
+  @@id([plantId, environmentId])
+}
