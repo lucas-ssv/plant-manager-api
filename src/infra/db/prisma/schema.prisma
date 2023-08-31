@@ -17,7 +17,7 @@ model Plant {
   waterTips String
   photo String
   plantWaterFrequencyId String? @unique
-  createdAt DateTime
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   environments PlantEnvironment[]
@@ -27,7 +27,7 @@ model Plant {
 model Environment {
   id String @id @default(uuid())
   title String
-  createdAt DateTime
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   plants PlantEnvironment[]
@@ -38,7 +38,7 @@ model PlantWaterFrequency {
   title String
   time String
   gap Int
-  createdAt DateTime
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   plant Plant?

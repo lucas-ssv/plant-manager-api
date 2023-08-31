@@ -8,16 +8,7 @@ export const mockAddPlantParams = (): PlantParams => ({
   description: faker.word.words(),
   waterTips: faker.word.words(),
   photo: faker.internet.url(),
-  environments: [
-    {
-      title: faker.word.words(),
-    },
-  ],
-  plantWaterFrequency: {
-    title: faker.word.words(),
-    time: faker.lorem.word(),
-    gap: faker.number.int(),
-  },
+  plantWaterFrequencyId: faker.database.column(),
 })
 
 export const mockPlantModel = (): Plant => ({
