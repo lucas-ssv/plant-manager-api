@@ -16,7 +16,9 @@ class AddPlantController {
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       await this.addPlant.perform(httpRequest.body)
-      return null as any
+      return {
+        statusCode: 204,
+      }
     } catch (error) {
       return {
         statusCode: 500,
@@ -87,6 +89,26 @@ describe('AddPlant Controller', () => {
             'An internal server error occurred while processing the request.',
         },
       },
+    })
+  })
+
+  it('should return 204 if AddPlant succeeds', async () => {
+    const addPlantSpy = new AddPlantSpy()
+    const sut = new AddPlantController(addPlantSpy)
+    const httpRequest = {
+      body: {
+        name: faker.lorem.words(),
+        description: faker.lorem.words(),
+        waterTips: faker.lorem.words(),
+        photo: faker.internet.avatar(),
+        plantWaterFrequencyId: faker.string.uuid(),
+      },
+    }
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual({
+      statusCode: 204,
     })
   })
 })
