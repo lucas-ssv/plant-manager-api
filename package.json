@@ -48,6 +48,7 @@
     "schema": "src/infra/db/prisma/schema.prisma"
   },
   "dependencies": {
-    "@prisma/client": "^5.2.0"
+    "@prisma/client": "^5.2.0",
+    "zod": "^3.22.2"
   }
 }

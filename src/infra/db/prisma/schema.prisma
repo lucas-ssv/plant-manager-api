@@ -14,8 +14,8 @@ model Plant {
   id String @id @default(uuid())
   name String
   description String
-  waterTips String
-  photo String
+  waterTips String?
+  photo String?
   plantWaterFrequencyId String? @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
