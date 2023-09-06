@@ -17,9 +17,11 @@ const mockRequest = (): HttpRequest => ({
 
 class ValidationMock {
   input?: object
+  output?: Error
 
-  validate(input: object): void {
+  validate(input: object): Error | undefined {
     this.input = input
+    return this.output
   }
 }
 
@@ -33,6 +35,26 @@ describe('AddPlant Controller', () => {
     await sut.handle(httpRequest)
 
     expect(validationMock.input).toEqual(httpRequest.body)
+  })
+
+  it('should return 400 if any validations fails', async () => {
+    const validationMock = new ValidationMock()
+    validationMock.output = new Error()
+    const addPlantSpy = new AddPlantSpy()
+    const sut = new AddPlantController(validationMock, addPlantSpy)
+
+    const httpResponse = await sut.handle(mockRequest())
+
+    expect(httpResponse).toEqual({
+      statusCode: 400,
+      body: {
+        error: {
+          name: 'BadRequest',
+          message:
+            'The customer request contains invalid data or is missing required information.',
+        },
+      },
+    })
   })
 
   it('should call AddPlant with correct data', async () => {

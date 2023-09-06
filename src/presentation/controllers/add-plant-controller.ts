@@ -15,7 +15,19 @@ export class AddPlantController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      this.validation.validate(httpRequest.body)
+      const error = this.validation.validate(httpRequest.body)
+      if (error instanceof Error) {
+        return {
+          statusCode: 400,
+          body: {
+            error: {
+              name: 'BadRequest',
+              message:
+                'The customer request contains invalid data or is missing required information.',
+            },
+          },
+        }
+      }
       await this.addPlant.perform(httpRequest.body)
       return noContent()
     } catch (error) {
