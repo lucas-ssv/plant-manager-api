@@ -7,7 +7,7 @@ class ZodValidatorAdapter {
   }
 
   isNumber(fieldValue: any): boolean {
-    return false
+    return z.number().safeParse(fieldValue).success
   }
 }
 
@@ -37,6 +37,14 @@ describe('ZodValidator Adapter', () => {
       const isNumber = sut.isNumber(faker.string.alpha())
 
       expect(isNumber).toBe(false)
+    })
+
+    it('should return true if field value is number', () => {
+      const sut = new ZodValidatorAdapter()
+
+      const isNumber = sut.isNumber(faker.number.int())
+
+      expect(isNumber).toBe(true)
     })
   })
 })
