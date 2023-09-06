@@ -10,10 +10,17 @@ class ZodValidatorAdapter {
 describe('ZodValidator Adapter', () => {
   it('should return false if field value is not string', () => {
     const sut = new ZodValidatorAdapter()
-    const fieldValue = faker.number.int()
 
-    const isString = sut.isString(fieldValue)
+    const isString = sut.isString(faker.number.int())
 
     expect(isString).toBe(false)
+  })
+
+  it('should return true if field value is string', () => {
+    const sut = new ZodValidatorAdapter()
+
+    const isString = sut.isString(faker.string.alpha())
+
+    expect(isString).toBe(true)
   })
 })
