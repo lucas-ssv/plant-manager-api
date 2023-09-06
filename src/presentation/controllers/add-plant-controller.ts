@@ -4,31 +4,24 @@ import {
   type HttpRequest,
   type Controller,
   type HttpResponse,
+  type Validation,
 } from '@/presentation/contracts'
-import { noContent, serverError } from '@/presentation/helpers'
+import { badRequest, noContent, serverError } from '@/presentation/helpers'
 
 export class AddPlantController implements Controller {
   constructor(
-    private readonly validation: any,
+    private readonly validation: Validation,
     private readonly addPlant: AddPlant
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const error = this.validation.validate(httpRequest.body)
+      const request = httpRequest.body
+      const error = this.validation.validate(request)
       if (error instanceof Error) {
-        return {
-          statusCode: 400,
-          body: {
-            error: {
-              name: 'BadRequest',
-              message:
-                'The customer request contains invalid data or is missing required information.',
-            },
-          },
-        }
+        return badRequest()
       }
-      await this.addPlant.perform(httpRequest.body)
+      await this.addPlant.perform(request)
       return noContent()
     } catch (error) {
       return serverError()
