@@ -1,15 +1,6 @@
+import { ZodValidatorAdapter } from '@/infra/validators'
+
 import { faker } from '@faker-js/faker'
-import { z } from 'zod'
-
-class ZodValidatorAdapter {
-  isString(fieldValue: any): boolean {
-    return z.string().safeParse(fieldValue).success
-  }
-
-  isNumber(fieldValue: any): boolean {
-    return z.number().safeParse(fieldValue).success
-  }
-}
 
 describe('ZodValidator Adapter', () => {
   describe('isString()', () => {
