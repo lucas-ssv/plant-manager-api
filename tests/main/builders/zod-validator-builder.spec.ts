@@ -1,10 +1,10 @@
-import { ZodValidatorAdapter } from '@/infra/validators'
+import { ZodValidatorBuilder } from '@/main/builders'
 
 import { faker } from '@faker-js/faker'
 
-describe('ZodValidatorAdapter', () => {
+describe('ZodValidatorBuilder', () => {
   it('should throw if field value is not string', () => {
-    const sut = ZodValidatorAdapter
+    const sut = ZodValidatorBuilder
     const fieldName = faker.database.column()
 
     const schema = sut.field(fieldName).string().build()
