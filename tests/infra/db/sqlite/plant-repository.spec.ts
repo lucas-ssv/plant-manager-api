@@ -13,6 +13,29 @@ describe('PlantRepository', () => {
     await prisma.$disconnect()
   })
 
+  it('should return true if plant with the same name exists', async () => {
+    const sut = new PlantRepository()
+    const plant = faker.lorem.word()
+
+    await sut.add({
+      name: plant,
+      description: faker.word.words(),
+      waterTips: faker.word.words(),
+      photo: faker.internet.avatar(),
+    })
+    const isPlantExists = await sut.check(plant)
+
+    expect(isPlantExists).toBe(true)
+  })
+
+  it('should return false if none plant with the same name exists', async () => {
+    const sut = new PlantRepository()
+
+    const isPlantExists = await sut.check(faker.lorem.word())
+
+    expect(isPlantExists).toBe(false)
+  })
+
   it('should add a plant on success', async () => {
     const sut = new PlantRepository()
     const plantWaterFrequencyId = faker.string.uuid()

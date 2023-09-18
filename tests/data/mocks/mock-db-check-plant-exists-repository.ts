@@ -6,7 +6,7 @@ export class CheckPlantExistsRepositorySpy
   name?: string
   output = false
 
-  async some(name: string): Promise<boolean> {
+  async check(name: string): Promise<boolean> {
     this.name = name
     return this.output
   }

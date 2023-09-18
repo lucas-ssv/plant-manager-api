@@ -12,7 +12,9 @@ export class DbAddPlant implements AddPlant {
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
-    const isPlantExists = await this.checkPlantExistsRepository.some(input.name)
+    const isPlantExists = await this.checkPlantExistsRepository.check(
+      input.name
+    )
     let isValid = true
     if (!isPlantExists) {
       isValid = false

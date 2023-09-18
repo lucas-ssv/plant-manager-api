@@ -1,3 +1,3 @@
 export interface CheckPlantExistsRepository {
-  some: (name: string) => Promise<boolean>
+  check: (name: string) => Promise<boolean>
 }

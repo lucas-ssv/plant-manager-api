@@ -84,7 +84,7 @@ describe('DbAddPlant UseCase', () => {
   it('should throw if CheckPlantExistsRepository throws', async () => {
     const { sut, checkPlantExistsRepositorySpy } = makeSut()
     jest
-      .spyOn(checkPlantExistsRepositorySpy, 'some')
+      .spyOn(checkPlantExistsRepositorySpy, 'check')
       .mockImplementationOnce(() => {
         throw new Error()
       })
