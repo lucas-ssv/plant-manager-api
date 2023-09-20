@@ -2,12 +2,12 @@ import { type PlantParams, type AddPlant } from '@/domain/usecases'
 
 import {
   type CheckPlantExistsRepository,
-  type AddPlantRepository,
+  type PlantRepository,
 } from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
   constructor(
-    private readonly addPlantRepository: AddPlantRepository,
+    private readonly plantRepository: PlantRepository,
     private readonly checkPlantExistsRepository: CheckPlantExistsRepository
   ) {}
 
@@ -18,7 +18,7 @@ export class DbAddPlant implements AddPlant {
     let isValid = true
     if (!isPlantExists) {
       isValid = false
-      await this.addPlantRepository.add(input)
+      await this.plantRepository.add(input)
     }
     return isValid
   }

@@ -1,9 +1,9 @@
 import { prisma } from '@/infra/db'
-import { PlantRepository } from '@/infra/db/sqlite'
+import { SQLitePlantRepository } from '@/infra/db/sqlite'
 
 import { faker } from '@faker-js/faker'
 
-describe('PlantRepository', () => {
+describe('SQLitePlantRepository', () => {
   beforeEach(async () => {
     await prisma.plant.deleteMany()
     await prisma.plantWaterFrequency.deleteMany()
@@ -14,7 +14,7 @@ describe('PlantRepository', () => {
   })
 
   it('should return true if plant with the same name exists', async () => {
-    const sut = new PlantRepository()
+    const sut = new SQLitePlantRepository()
     const plant = faker.lorem.word()
 
     await sut.add({
@@ -29,7 +29,7 @@ describe('PlantRepository', () => {
   })
 
   it('should return false if none plant with the same name exists', async () => {
-    const sut = new PlantRepository()
+    const sut = new SQLitePlantRepository()
 
     const isPlantExists = await sut.check(faker.lorem.word())
 
@@ -37,7 +37,7 @@ describe('PlantRepository', () => {
   })
 
   it('should add a plant on success', async () => {
-    const sut = new PlantRepository()
+    const sut = new SQLitePlantRepository()
     const plantWaterFrequencyId = faker.string.uuid()
 
     const { id } = await prisma.plantWaterFrequency.create({

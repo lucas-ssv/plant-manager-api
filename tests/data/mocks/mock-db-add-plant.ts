@@ -1,8 +1,8 @@
 import { type PlantParams } from '@/domain/usecases'
 
-import { type AddPlantRepository } from '@/data/contracts'
+import { type PlantRepository } from '@/data/contracts'
 
-export class AddPlantRepositoryMock implements AddPlantRepository {
+export class AddPlantRepositoryMock implements PlantRepository {
   input?: PlantParams
   callsCount = 0
 
