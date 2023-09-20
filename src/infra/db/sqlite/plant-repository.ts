@@ -1,27 +1,41 @@
 import { type PlantParams } from '@/domain/usecases'
+import { type Plant } from '@/domain/entities'
 
-import {
-  type CheckPlantExistsRepository,
-  type PlantRepository,
-} from '@/data/contracts'
+import { type PlantRepository } from '@/data/contracts'
 
 import { prisma } from '@/infra/db'
 
-export class SQLitePlantRepository
-  implements PlantRepository, CheckPlantExistsRepository
-{
+export class SQLitePlantRepository implements PlantRepository {
   async add(input: PlantParams): Promise<void> {
     await prisma.plant.create({
       data: input,
     })
   }
 
-  async check(name: string): Promise<boolean> {
+  async findByName(name: string): Promise<Plant> {
     const plant = await prisma.plant.findFirst({
       where: {
         name,
       },
+      include: {
+        PlantWaterFrequency: true,
+        environments: {
+          include: {
+            environment: true,
+          },
+        },
+      },
     })
-    return plant instanceof Object
+    return plant === null
+      ? null
+      : ({
+          id: plant?.id,
+          name: plant?.name,
+          description: plant?.description,
+          environments: plant?.environments,
+          photo: plant?.photo,
+          waterTips: plant?.waterTips,
+          plantWaterFrequency: plant?.PlantWaterFrequency,
+        } as any)
   }
 }

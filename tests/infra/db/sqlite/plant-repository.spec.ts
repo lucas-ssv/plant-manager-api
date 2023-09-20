@@ -13,27 +13,28 @@ describe('SQLitePlantRepository', () => {
     await prisma.$disconnect()
   })
 
-  it('should return true if plant with the same name exists', async () => {
+  it('should return a plant if plant with the same name exists', async () => {
     const sut = new SQLitePlantRepository()
-    const plant = faker.lorem.word()
-
-    await sut.add({
-      name: plant,
+    const plantName = faker.lorem.word()
+    const plantData = {
+      name: plantName,
       description: faker.word.words(),
       waterTips: faker.word.words(),
       photo: faker.internet.avatar(),
-    })
-    const isPlantExists = await sut.check(plant)
+    }
 
-    expect(isPlantExists).toBe(true)
+    await sut.add(plantData)
+    const plant = await sut.findByName(plantName)
+
+    expect(plant).not.toBe(null)
   })
 
-  it('should return false if none plant with the same name exists', async () => {
+  it('should return null if none plant with the same name exists', async () => {
     const sut = new SQLitePlantRepository()
 
-    const isPlantExists = await sut.check(faker.lorem.word())
+    const plant = await sut.findByName(faker.lorem.word())
 
-    expect(isPlantExists).toBe(false)
+    expect(plant).toBe(null)
   })
 
   it('should add a plant on success', async () => {
