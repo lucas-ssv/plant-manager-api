@@ -1,7 +1,8 @@
 import { type HttpRequest } from '@/presentation/contracts'
 import { AddPlantController } from '@/presentation/controllers'
 import { AddPlantSpy } from '@/tests/presentation/mocks'
-import { noContent, serverError } from '@/presentation/helpers'
+import { badRequest, noContent, serverError } from '@/presentation/helpers'
+import { DataAlreadyExistsError } from '@/presentation/errors'
 
 import { faker } from '@faker-js/faker'
 
@@ -35,7 +36,23 @@ describe('AddPlant Controller', () => {
 
     const httpResponse = await sut.handle(mockRequest())
 
-    expect(httpResponse).toEqual(serverError())
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('should return 400 if AddPlant returns true', async () => {
+    const addPlantSpy = new AddPlantSpy()
+    addPlantSpy.output = true
+    const sut = new AddPlantController(addPlantSpy)
+
+    const httpResponse = await sut.handle(mockRequest())
+
+    expect(httpResponse).toEqual(
+      badRequest(
+        new DataAlreadyExistsError(
+          'The plant name already exists in your collection.'
+        )
+      )
+    )
   })
 
   it('should return 204 if AddPlant succeeds', async () => {

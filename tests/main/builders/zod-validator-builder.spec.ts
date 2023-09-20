@@ -4,14 +4,11 @@ import { faker } from '@faker-js/faker'
 
 describe('ZodValidatorBuilder', () => {
   it('should throw if field value is not string', () => {
-    const sut = ZodValidatorBuilder
-    const fieldName = faker.database.column()
+    const sut = new ZodValidatorBuilder()
 
-    const schema = sut.field(fieldName).string().build()
+    const schema = sut.field('name').string().build()
 
-    expect(() => schema.parse({ [fieldName]: faker.number.int() })).toThrow()
-    expect(() =>
-      schema.parse({ [fieldName]: faker.string.alpha() })
-    ).not.toThrow()
+    expect(() => schema.parse({ name: faker.number.int() })).toThrow()
+    expect(() => schema.parse({ name: faker.string.alpha() })).not.toThrow()
   })
 })

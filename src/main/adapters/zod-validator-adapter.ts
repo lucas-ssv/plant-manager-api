@@ -9,7 +9,13 @@ export const validatorAdapter = (
       schema.parse(req.body)
       next()
     } catch (error) {
-      res.status(400).json({ error: error.message })
+      res.status(500).json({
+        error: {
+          name: error.name,
+          path: error.issues[0].path,
+          message: error.issues[0].message,
+        },
+      })
     }
   }
 }

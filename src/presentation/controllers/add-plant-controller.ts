@@ -5,17 +5,25 @@ import {
   type Controller,
   type HttpResponse,
 } from '@/presentation/contracts'
-import { noContent, serverError } from '@/presentation/helpers'
+import { badRequest, noContent, serverError } from '@/presentation/helpers'
+import { DataAlreadyExistsError } from '@/presentation/errors'
 
 export class AddPlantController implements Controller {
   constructor(private readonly addPlant: AddPlant) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      await this.addPlant.perform(httpRequest.body)
+      const isPlantExists = await this.addPlant.perform(httpRequest.body)
+      if (isPlantExists) {
+        return badRequest(
+          new DataAlreadyExistsError(
+            'The plant name already exists in your collection.'
+          )
+        )
+      }
       return noContent()
     } catch (error) {
-      return serverError()
+      return serverError(error)
     }
   }
 }

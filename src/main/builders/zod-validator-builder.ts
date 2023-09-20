@@ -1,21 +1,23 @@
 import { z } from 'zod'
 
 export class ZodValidatorBuilder {
-  private schema: z.ZodObject<any, 'strip', z.ZodTypeAny, any, any>
-  constructor(private readonly fieldName: string) {
+  private schema
+  private fieldName
+
+  constructor() {
     this.schema = z.object({})
+    this.fieldName = ''
   }
 
-  static field(fieldName: string): ZodValidatorBuilder {
-    return new ZodValidatorBuilder(fieldName)
+  field(fieldName: string): ZodValidatorBuilder {
+    this.fieldName = fieldName
+    return this
   }
 
   string(): ZodValidatorBuilder {
-    this.schema = this.schema.merge(
-      z.object({
-        [this.fieldName]: z.string(),
-      })
-    )
+    this.schema = this.schema.extend({
+      [this.fieldName]: z.string(),
+    })
     return this
   }
 

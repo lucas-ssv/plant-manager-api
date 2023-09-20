@@ -1,8 +1,6 @@
 import { type HttpResponse } from '@/presentation/contracts'
-import { ServerError } from '@/presentation/errors'
 
-export const serverError = (): HttpResponse => {
-  const error = new ServerError()
+export const serverError = (error: Error): HttpResponse => {
   return {
     statusCode: 500,
     body: {
@@ -13,6 +11,16 @@ export const serverError = (): HttpResponse => {
     },
   }
 }
+
+export const badRequest = (error: Error): HttpResponse => ({
+  statusCode: 400,
+  body: {
+    error: {
+      name: error.name,
+      message: error.message,
+    },
+  },
+})
 
 export const noContent = (): HttpResponse => ({
   statusCode: 204,
