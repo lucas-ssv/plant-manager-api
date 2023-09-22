@@ -1,5 +1,5 @@
 export interface AddPlantWaterFrequency {
-  perform: (input: AddPlantWaterFrequencyParams) => Promise<void>
+  perform: (input: AddPlantWaterFrequencyParams) => Promise<string>
 }
 
 export interface AddPlantWaterFrequencyParams {
