@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 
 class DbAddPlantWaterFrequency {
   constructor(
-    private readonly plantWaterFrequencyRepository: PlantWaterFrequencyRepositoryMock
+    private readonly plantWaterFrequencyRepository: PlantWaterFrequencyRepositorySpy
   ) {}
 
   async perform(input: AddPlantWaterFrequencyParams): Promise<void> {
@@ -12,11 +12,13 @@ class DbAddPlantWaterFrequency {
   }
 }
 
-class PlantWaterFrequencyRepositoryMock {
+class PlantWaterFrequencyRepositorySpy {
   input?: AddPlantWaterFrequencyParams
+  output = faker.string.alpha()
 
-  async add(input: AddPlantWaterFrequencyParams): Promise<void> {
+  async add(input: AddPlantWaterFrequencyParams): Promise<string> {
     this.input = input
+    return this.output
   }
 }
 
@@ -28,13 +30,28 @@ const mockAddPlantWaterFrequencyParams = (): AddPlantWaterFrequencyParams => ({
 
 describe('DbAddPlantWaterFrequency UseCase', () => {
   it('should call PlantWaterFrequencyRepository with correct data', async () => {
-    const plantWaterFrequencyRepositoryMock =
-      new PlantWaterFrequencyRepositoryMock()
-    const sut = new DbAddPlantWaterFrequency(plantWaterFrequencyRepositoryMock)
+    const plantWaterFrequencyRepositorySpy =
+      new PlantWaterFrequencyRepositorySpy()
+    const sut = new DbAddPlantWaterFrequency(plantWaterFrequencyRepositorySpy)
     const input = mockAddPlantWaterFrequencyParams()
 
     await sut.perform(input)
 
-    expect(plantWaterFrequencyRepositoryMock.input).toEqual(input)
+    expect(plantWaterFrequencyRepositorySpy.input).toEqual(input)
+  })
+
+  it('should throw if PlantWaterFrequencyRepository throws', async () => {
+    const plantWaterFrequencyRepositorySpy =
+      new PlantWaterFrequencyRepositorySpy()
+    jest
+      .spyOn(plantWaterFrequencyRepositorySpy, 'add')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+    const sut = new DbAddPlantWaterFrequency(plantWaterFrequencyRepositorySpy)
+
+    const promise = sut.perform(mockAddPlantWaterFrequencyParams())
+
+    await expect(promise).rejects.toThrowError()
   })
 })
