@@ -1,32 +1,7 @@
-import { type AddPlantWaterFrequencyParams } from '@/domain/usecases'
+import { mockAddPlantWaterFrequencyParams } from '@/tests/domain/mocks'
 
-import { faker } from '@faker-js/faker'
-
-class DbAddPlantWaterFrequency {
-  constructor(
-    private readonly plantWaterFrequencyRepository: PlantWaterFrequencyRepositorySpy
-  ) {}
-
-  async perform(input: AddPlantWaterFrequencyParams): Promise<void> {
-    await this.plantWaterFrequencyRepository.add(input)
-  }
-}
-
-class PlantWaterFrequencyRepositorySpy {
-  input?: AddPlantWaterFrequencyParams
-  output = faker.string.alpha()
-
-  async add(input: AddPlantWaterFrequencyParams): Promise<string> {
-    this.input = input
-    return this.output
-  }
-}
-
-const mockAddPlantWaterFrequencyParams = (): AddPlantWaterFrequencyParams => ({
-  title: faker.lorem.words(),
-  time: faker.string.alphanumeric(),
-  gap: faker.number.int(),
-})
+import { PlantWaterFrequencyRepositorySpy } from '@/tests/data/mocks'
+import { DbAddPlantWaterFrequency } from '@/data/usecases'
 
 describe('DbAddPlantWaterFrequency UseCase', () => {
   it('should call PlantWaterFrequencyRepository with correct data', async () => {
