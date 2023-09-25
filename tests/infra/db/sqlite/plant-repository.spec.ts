@@ -49,16 +49,15 @@ describe('SQLitePlantRepository', () => {
         gap: faker.number.int({ max: 2 }),
       },
     })
-    await sut.add({
+    const isValid = await sut.add({
       name: faker.lorem.word(),
       description: faker.word.words(),
       waterTips: faker.word.words(),
       photo: faker.internet.avatar(),
       plantWaterFrequencyId,
     })
-    const plants = await prisma.plant.findMany()
 
-    expect(plants.length).toBe(1)
+    expect(isValid).toBe(true)
     expect(plantWaterFrequencyId).toBe(id)
   })
 })

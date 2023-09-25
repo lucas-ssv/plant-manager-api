@@ -2,7 +2,7 @@ import { type Plant } from '@/domain/entities'
 import { type PlantParams } from '@/domain/usecases'
 
 export interface PlantRepository {
-  add: (input: PlantRepository.AddParams) => Promise<void>
+  add: (input: PlantRepository.AddParams) => Promise<boolean>
   findByName: (
     name: string
   ) => Promise<PlantRepository.FindByNameResponse | null>

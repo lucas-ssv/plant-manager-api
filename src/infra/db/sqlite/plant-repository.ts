@@ -3,10 +3,11 @@ import { type PlantRepository } from '@/data/contracts'
 import { prisma } from '@/infra/db'
 
 export class SQLitePlantRepository implements PlantRepository {
-  async add(input: PlantRepository.AddParams): Promise<void> {
-    await prisma.plant.create({
+  async add(input: PlantRepository.AddParams): Promise<boolean> {
+    const plant = await prisma.plant.create({
       data: input,
     })
+    return plant !== null
   }
 
   async findByName(name: string): Promise<PlantRepository.FindByNameResponse> {
