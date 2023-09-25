@@ -13,8 +13,8 @@ export class AddPlantController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const isPlantExists = await this.addPlant.perform(httpRequest.body)
-      if (isPlantExists) {
+      const isValid = await this.addPlant.perform(httpRequest.body)
+      if (!isValid) {
         return badRequest(
           new DataAlreadyExistsError(
             'The plant name already exists in your collection.'

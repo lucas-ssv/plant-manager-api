@@ -1,16 +1,21 @@
-import { type PlantRepository } from '@/data/contracts'
+import {
+  type AddPlantRepository,
+  type FindPlantByNameRepository,
+} from '@/data/contracts'
 
 import { prisma } from '@/infra/db'
 
-export class SQLitePlantRepository implements PlantRepository {
-  async add(input: PlantRepository.AddParams): Promise<boolean> {
+export class SQLitePlantRepository
+  implements FindPlantByNameRepository, AddPlantRepository
+{
+  async add(input: AddPlantRepository.AddParams): Promise<boolean> {
     const plant = await prisma.plant.create({
       data: input,
     })
     return plant !== null
   }
 
-  async findByName(name: string): Promise<PlantRepository.FindByNameResponse> {
+  async findByName(name: string): Promise<FindPlantByNameRepository.Result> {
     const plant = await prisma.plant.findFirst({
       where: {
         name,

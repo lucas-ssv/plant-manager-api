@@ -7,6 +7,6 @@ import { AddPlantController } from '@/presentation/controllers'
 
 export const makeAddPlantController = (): Controller => {
   const plantRepository = new SQLitePlantRepository()
-  const addPlant = new DbAddPlant(plantRepository)
+  const addPlant = new DbAddPlant(plantRepository, plantRepository)
   return new AddPlantController(addPlant)
 }

@@ -39,9 +39,9 @@ describe('AddPlant Controller', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
-  it('should return 400 if AddPlant returns true', async () => {
+  it('should return 400 if AddPlant returns false', async () => {
     const addPlantSpy = new AddPlantSpy()
-    addPlantSpy.output = true
+    addPlantSpy.output = false
     const sut = new AddPlantController(addPlantSpy)
 
     const httpResponse = await sut.handle(mockRequest())
