@@ -1,19 +1,7 @@
-import { type PlantWaterFrequencyRepository } from '@/data/contracts'
-
 import { prisma } from '@/infra/db'
+import { SQLitePlantWaterFrequencyRepository } from '@/infra/db/sqlite'
 
 import { faker } from '@faker-js/faker'
-
-class SQLitePlantWaterFrequencyRepository
-  implements PlantWaterFrequencyRepository
-{
-  async add(input: PlantWaterFrequencyRepository.Params): Promise<string> {
-    const plantWaterFrequency = await prisma.plantWaterFrequency.create({
-      data: input,
-    })
-    return plantWaterFrequency.id
-  }
-}
 
 describe('SQLitePlantWaterFrequencyRepository', () => {
   beforeEach(async () => {
