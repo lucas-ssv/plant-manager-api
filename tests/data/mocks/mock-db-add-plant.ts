@@ -1,19 +1,15 @@
 import { type PlantParams } from '@/domain/usecases'
 
-import { type PlantRepository } from '@/data/contracts'
-import { type Plant } from '@/domain/entities'
+import { type AddPlantRepository } from '@/data/contracts'
 
-export class PlantRepositoryMock implements PlantRepository {
+export class AddPlantRepositoryMock implements AddPlantRepository {
   input?: PlantParams
   callsCount = 0
-  output: Plant | null = null
+  output = true
 
-  async add(input: PlantParams): Promise<void> {
+  async add(input: PlantParams): Promise<boolean> {
     this.input = input
     this.callsCount++
-  }
-
-  async findByName(name: string): Promise<Plant | null> {
     return this.output
   }
 }
