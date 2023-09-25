@@ -5,7 +5,7 @@ import {
   type Controller,
   type HttpResponse,
 } from '@/presentation/contracts'
-import { badRequest, noContent, serverError } from '@/presentation/helpers'
+import { badRequest, created, serverError } from '@/presentation/helpers'
 import { DataAlreadyExistsError } from '@/presentation/errors'
 
 export class AddPlantController implements Controller {
@@ -21,7 +21,7 @@ export class AddPlantController implements Controller {
           )
         )
       }
-      return noContent()
+      return created()
     } catch (error) {
       return serverError(error)
     }

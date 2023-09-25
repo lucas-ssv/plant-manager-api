@@ -22,6 +22,6 @@ export const badRequest = (error: Error): HttpResponse => ({
   },
 })
 
-export const noContent = (): HttpResponse => ({
-  statusCode: 204,
+export const created = (): HttpResponse => ({
+  statusCode: 201,
 })
