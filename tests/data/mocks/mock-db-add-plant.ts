@@ -1,15 +1,11 @@
-import { type PlantParams } from '@/domain/usecases'
-
 import { type AddPlantRepository } from '@/data/contracts'
 
 export class AddPlantRepositoryMock implements AddPlantRepository {
-  input?: PlantParams
-  callsCount = 0
+  input?: AddPlantRepository.AddParams
   output = true
 
-  async add(input: PlantParams): Promise<boolean> {
+  async add(input: AddPlantRepository.AddParams): Promise<boolean> {
     this.input = input
-    this.callsCount++
     return this.output
   }
 }

@@ -5,5 +5,7 @@ export interface AddPlantRepository {
 }
 
 export namespace AddPlantRepository {
-  export interface AddParams extends PlantParams {}
+  export interface AddParams extends Omit<PlantParams, 'plantWaterFrequency'> {
+    plantWaterFrequencyId: string
+  }
 }

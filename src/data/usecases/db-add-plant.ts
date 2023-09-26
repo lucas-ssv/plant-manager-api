@@ -14,12 +14,18 @@ export class DbAddPlant implements AddPlant {
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
-    const { name, plantWaterFrequency } = input
-    const plant = await this.findPlantByNameRepository.findByName(name)
+    const { plantWaterFrequency, ...restPlant } = input
+    const plant = await this.findPlantByNameRepository.findByName(
+      restPlant.name
+    )
     let isValid = false
     if (plant === null) {
-      await this.addPlantWaterFrequencyRepository.add(plantWaterFrequency)
-      isValid = await this.addPlantRepository.add(input)
+      const plantWaterFrequencyId =
+        await this.addPlantWaterFrequencyRepository.add(plantWaterFrequency)
+      isValid = await this.addPlantRepository.add({
+        ...restPlant,
+        plantWaterFrequencyId,
+      })
     }
     return isValid
   }
