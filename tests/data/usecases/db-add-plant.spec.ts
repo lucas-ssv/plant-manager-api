@@ -107,6 +107,19 @@ describe('DbAddPlant UseCase', () => {
     })
   })
 
+  it('should throw if AddPlantWaterFrequencyRepository throws', async () => {
+    const { sut, addPlantWaterFrequencyRepositoryMock } = makeSut()
+    jest
+      .spyOn(addPlantWaterFrequencyRepositoryMock, 'add')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.perform(mockAddPlantParams())
+
+    await expect(promise).rejects.toThrowError()
+  })
+
   it('should call AddPlantRepository.add() only once', async () => {
     const { sut, addPlantRepositoryMock } = makeSut()
 
