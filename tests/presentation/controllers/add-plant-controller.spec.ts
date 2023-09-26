@@ -1,7 +1,7 @@
 import { type HttpRequest } from '@/presentation/contracts'
 import { AddPlantController } from '@/presentation/controllers'
 import { AddPlantSpy } from '@/tests/presentation/mocks'
-import { badRequest, noContent, serverError } from '@/presentation/helpers'
+import { badRequest, created, serverError } from '@/presentation/helpers'
 import { DataAlreadyExistsError } from '@/presentation/errors'
 
 import { faker } from '@faker-js/faker'
@@ -61,6 +61,6 @@ describe('AddPlant Controller', () => {
 
     const httpResponse = await sut.handle(mockRequest())
 
-    expect(httpResponse).toEqual(noContent())
+    expect(httpResponse).toEqual(created())
   })
 })
