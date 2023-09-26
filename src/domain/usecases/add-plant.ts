@@ -9,5 +9,5 @@ export interface PlantParams {
   description: string
   waterTips: string
   photo: string
-  plantWaterFrequency?: Omit<PlantWaterFrequency, 'id'>
+  plantWaterFrequency: Omit<PlantWaterFrequency, 'id'>
 }
