@@ -55,7 +55,8 @@
     ]
   },
   "prisma": {
-    "schema": "src/infra/db/prisma/schema.prisma"
+    "schema": "src/infra/db/prisma/schema.prisma",
+    "seed": "ts-node src/infra/db/prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
