@@ -21,6 +21,25 @@ export class ZodValidatorBuilder {
     return this
   }
 
+  object(obj: object): ZodValidatorBuilder {
+    const validations: z.ZodRawShape = {}
+    for (const field of Object.entries(obj)) {
+      switch (field[1]) {
+        case 'string':
+          validations[field[0]] = z.string()
+          break
+        case 'number':
+          validations[field[0]] = z.number()
+          break
+      }
+    }
+    const shape = z.object(validations)
+    this.schema = this.schema.extend({
+      [this.fieldName]: shape,
+    })
+    return this
+  }
+
   build(): z.ZodObject<any, 'strip', z.ZodTypeAny, any, any> {
     return this.schema
   }
