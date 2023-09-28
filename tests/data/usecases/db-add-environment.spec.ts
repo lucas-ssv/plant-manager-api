@@ -11,17 +11,17 @@ class DbAddEnvironment implements AddEnvironment {
   ) {}
 
   async perform(input: AddEnvironmentParams): Promise<string> {
-    await this.addEnvironmentRepository.add(input)
-    return ''
+    return await this.addEnvironmentRepository.add(input)
   }
 }
 
 class AddEnvironmentRepositoryMock {
   input?: AddEnvironmentParams
+  output = faker.string.uuid()
 
   async add(input: AddEnvironmentParams): Promise<string> {
     this.input = input
-    return ''
+    return this.output
   }
 }
 
@@ -38,5 +38,17 @@ describe('DbAddEnvironment UseCase', () => {
     expect(addEnvironmentRepositoryMock.input).toEqual({
       title,
     })
+  })
+
+  it('should return an environment id on success', async () => {
+    const addEnvironmentRepositoryMock = new AddEnvironmentRepositoryMock()
+    addEnvironmentRepositoryMock.output = faker.string.uuid()
+    const sut = new DbAddEnvironment(addEnvironmentRepositoryMock)
+
+    const environmentId = await sut.perform({
+      title: faker.lorem.words(),
+    })
+
+    expect(environmentId).toBe(addEnvironmentRepositoryMock.output)
   })
 })
