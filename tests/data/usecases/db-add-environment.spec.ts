@@ -51,4 +51,20 @@ describe('DbAddEnvironment UseCase', () => {
 
     expect(environmentId).toBe(addEnvironmentRepositoryMock.output)
   })
+
+  it('should throw if AddEnvironmentRepository throws', async () => {
+    const addEnvironmentRepositoryMock = new AddEnvironmentRepositoryMock()
+    jest
+      .spyOn(addEnvironmentRepositoryMock, 'add')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+    const sut = new DbAddEnvironment(addEnvironmentRepositoryMock)
+
+    const promise = sut.perform({
+      title: faker.lorem.words(),
+    })
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
