@@ -16,14 +16,21 @@ describe('SQLitePlantRepository', () => {
   it('should return a plant if plant with the same name exists', async () => {
     const sut = new SQLitePlantRepository()
     const plantName = faker.lorem.word()
-    const plantData = {
+
+    const plantWaterFrequency = await prisma.plantWaterFrequency.create({
+      data: {
+        title: faker.lorem.words(),
+        time: faker.string.numeric(),
+        gap: faker.number.int(1),
+      },
+    })
+    await sut.add({
       name: plantName,
       description: faker.word.words(),
       waterTips: faker.word.words(),
       photo: faker.internet.avatar(),
-    }
-
-    await sut.add(plantData)
+      plantWaterFrequencyId: plantWaterFrequency.id,
+    })
     const plant = await sut.findByName(plantName)
 
     expect(plant).not.toBe(null)

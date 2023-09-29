@@ -1,17 +1,7 @@
-import { type AddEnvironmentRepository } from '@/data/contracts'
-
 import { prisma } from '@/infra/db'
+import { EnvironmentRepository } from '@/infra/db/sqlite'
 
 import { faker } from '@faker-js/faker'
-
-class EnvironmentRepository implements AddEnvironmentRepository {
-  async add(input: AddEnvironmentRepository.Params): Promise<string> {
-    const environment = await prisma.environment.create({
-      data: input,
-    })
-    return environment.id
-  }
-}
 
 describe('EnvironmentRepository', () => {
   beforeEach(async () => {
