@@ -4,13 +4,15 @@ import {
   type FindPlantByNameRepository,
   type AddPlantRepository,
   type AddPlantWaterFrequencyRepository,
+  type AddEnvironmentRepository,
 } from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
   constructor(
     private readonly findPlantByNameRepository: FindPlantByNameRepository,
     private readonly addPlantWaterFrequencyRepository: AddPlantWaterFrequencyRepository,
-    private readonly addPlantRepository: AddPlantRepository
+    private readonly addPlantRepository: AddPlantRepository,
+    private readonly addEnvironmentRepository: AddEnvironmentRepository
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
@@ -26,6 +28,7 @@ export class DbAddPlant implements AddPlant {
         ...restPlant,
         plantWaterFrequencyId,
       })
+      await this.addEnvironmentRepository.add(restPlant.environments)
     }
     return isValid
   }
