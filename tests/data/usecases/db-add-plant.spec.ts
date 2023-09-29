@@ -15,14 +15,16 @@ interface SutTypes {
   findPlantByNameRepositorySpy: FindPlantByNameRepositorySpy
   addPlantWaterFrequencyRepositorySpy: AddPlantWaterFrequencyRepositorySpy
   addPlantRepositoryMock: AddPlantRepositoryMock
-  addEnvironmentRepositoryMock: AddEnvironmentRepositoryMock
+  addEnvironmentRepositorySpy: AddEnvironmentRepositorySpy
 }
 
-class AddEnvironmentRepositoryMock implements AddEnvironmentRepository {
+class AddEnvironmentRepositorySpy implements AddEnvironmentRepository {
   input?: string[]
+  output = true
 
-  async add(input: string[]): Promise<void> {
+  async add(input: string[]): Promise<boolean> {
     this.input = input
+    return this.output
   }
 }
 
@@ -31,19 +33,19 @@ const makeSut = (): SutTypes => {
   const addPlantWaterFrequencyRepositorySpy =
     new AddPlantWaterFrequencyRepositorySpy()
   const addPlantRepositoryMock = new AddPlantRepositoryMock()
-  const addEnvironmentRepositoryMock = new AddEnvironmentRepositoryMock()
+  const addEnvironmentRepositorySpy = new AddEnvironmentRepositorySpy()
   const sut = new DbAddPlant(
     findPlantByNameRepositorySpy,
     addPlantWaterFrequencyRepositorySpy,
     addPlantRepositoryMock,
-    addEnvironmentRepositoryMock
+    addEnvironmentRepositorySpy
   )
   return {
     sut,
     findPlantByNameRepositorySpy,
     addPlantWaterFrequencyRepositorySpy,
     addPlantRepositoryMock,
-    addEnvironmentRepositoryMock,
+    addEnvironmentRepositorySpy,
   }
 }
 
@@ -124,12 +126,12 @@ describe('DbAddPlant UseCase', () => {
   })
 
   it('should call AddEnvironmentRepository with correct data', async () => {
-    const { sut, addEnvironmentRepositoryMock } = makeSut()
+    const { sut, addEnvironmentRepositorySpy } = makeSut()
     const input = mockAddPlantParams()
 
     await sut.perform(input)
 
-    expect(addEnvironmentRepositoryMock.input).toEqual(input.environments)
+    expect(addEnvironmentRepositorySpy.input).toEqual(input.environments)
   })
 
   it('should return true on success', async () => {
