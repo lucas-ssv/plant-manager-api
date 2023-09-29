@@ -6,10 +6,10 @@ import { faker } from '@faker-js/faker'
 
 class EnvironmentRepository implements AddEnvironmentRepository {
   async add(input: AddEnvironmentRepository.Params): Promise<string> {
-    await prisma.environment.create({
+    const environment = await prisma.environment.create({
       data: input,
     })
-    return ''
+    return environment.id
   }
 }
 
@@ -22,7 +22,7 @@ describe('EnvironmentRepository', () => {
     await prisma.$disconnect()
   })
 
-  it('should add an environment with the correct title on success', async () => {
+  it('should add an environment with the correct title', async () => {
     const sut = new EnvironmentRepository()
     const title = faker.lorem.words()
 
@@ -36,5 +36,17 @@ describe('EnvironmentRepository', () => {
     })
 
     expect(environment?.title).toBe(title)
+  })
+
+  it('should return an environment id on success', async () => {
+    const sut = new EnvironmentRepository()
+    const id = faker.string.uuid()
+    jest.spyOn(sut, 'add').mockReturnValueOnce(Promise.resolve(id))
+
+    const environmentId = await sut.add({
+      title: faker.lorem.words(),
+    })
+
+    expect(environmentId).toBe(id)
   })
 })
