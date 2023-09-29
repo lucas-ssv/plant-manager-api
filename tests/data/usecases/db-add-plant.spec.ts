@@ -1,12 +1,12 @@
-import { DbAddPlant } from '@/data/usecases'
-
 import { mockAddPlantParams, mockPlantModel } from '@/tests/domain/mocks'
-import { AddPlantRepositoryMock } from '@/tests/data/mocks'
+
+import { DbAddPlant } from '@/data/usecases'
 import {
-  type PlantWaterFrequencyRepository,
-  type FindPlantByNameRepository,
-} from '@/data/contracts'
-import { type Plant } from '@/domain/entities'
+  AddPlantRepositoryMock,
+  AddPlantWaterFrequencyRepositorySpy,
+  FindPlantByNameRepositorySpy,
+} from '@/tests/data/mocks'
+
 import { faker } from '@faker-js/faker'
 
 interface SutTypes {
@@ -14,28 +14,6 @@ interface SutTypes {
   findPlantByNameRepositorySpy: FindPlantByNameRepositorySpy
   addPlantWaterFrequencyRepositorySpy: AddPlantWaterFrequencyRepositorySpy
   addPlantRepositoryMock: AddPlantRepositoryMock
-}
-
-class FindPlantByNameRepositorySpy implements FindPlantByNameRepository {
-  output: Plant | null = null
-
-  async findByName(
-    name: string
-  ): Promise<FindPlantByNameRepository.Result | null> {
-    return this.output
-  }
-}
-
-class AddPlantWaterFrequencyRepositorySpy
-  implements PlantWaterFrequencyRepository
-{
-  input?: PlantWaterFrequencyRepository.Params
-  output = faker.string.uuid()
-
-  async add(input: PlantWaterFrequencyRepository.Params): Promise<string> {
-    this.input = input
-    return this.output
-  }
 }
 
 const makeSut = (): SutTypes => {

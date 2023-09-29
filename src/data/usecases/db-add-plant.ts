@@ -3,13 +3,13 @@ import { type PlantParams, type AddPlant } from '@/domain/usecases'
 import {
   type FindPlantByNameRepository,
   type AddPlantRepository,
-  type PlantWaterFrequencyRepository,
+  type AddPlantWaterFrequencyRepository,
 } from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
   constructor(
     private readonly findPlantByNameRepository: FindPlantByNameRepository,
-    private readonly addPlantWaterFrequencyRepository: PlantWaterFrequencyRepository,
+    private readonly addPlantWaterFrequencyRepository: AddPlantWaterFrequencyRepository,
     private readonly addPlantRepository: AddPlantRepository
   ) {}
 

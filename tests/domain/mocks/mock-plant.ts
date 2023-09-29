@@ -13,6 +13,7 @@ export const mockAddPlantParams = (): PlantParams => ({
     time: faker.lorem.word(),
     gap: faker.number.int(),
   },
+  environments: [faker.string.alpha(), faker.string.alpha()],
 })
 
 export const mockPlantModel = (): Plant => ({

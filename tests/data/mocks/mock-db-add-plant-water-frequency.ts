@@ -1,11 +1,11 @@
 import { type AddPlantWaterFrequencyParams } from '@/domain/usecases'
 
-import { type PlantWaterFrequencyRepository } from '@/data/contracts'
+import { type AddPlantWaterFrequencyRepository } from '@/data/contracts'
 
 import { faker } from '@faker-js/faker'
 
-export class PlantWaterFrequencyRepositorySpy
-  implements PlantWaterFrequencyRepository
+export class AddPlantWaterFrequencyRepositorySpy
+  implements AddPlantWaterFrequencyRepository
 {
   input?: AddPlantWaterFrequencyParams
   output = faker.string.alpha()
