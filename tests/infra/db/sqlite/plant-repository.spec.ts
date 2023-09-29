@@ -47,6 +47,8 @@ describe('SQLitePlantRepository', () => {
   it('should add a plant on success', async () => {
     const sut = new SQLitePlantRepository()
     const plantWaterFrequencyId = faker.string.uuid()
+    const fakePlantId = faker.string.uuid()
+    jest.spyOn(sut, 'add').mockReturnValueOnce(Promise.resolve(fakePlantId))
 
     const { id } = await prisma.plantWaterFrequency.create({
       data: {
@@ -56,7 +58,7 @@ describe('SQLitePlantRepository', () => {
         gap: faker.number.int({ max: 2 }),
       },
     })
-    const isValid = await sut.add({
+    const plantId = await sut.add({
       name: faker.lorem.word(),
       description: faker.word.words(),
       waterTips: faker.word.words(),
@@ -64,7 +66,7 @@ describe('SQLitePlantRepository', () => {
       plantWaterFrequencyId,
     })
 
-    expect(isValid).toBe(true)
+    expect(plantId).toBe(fakePlantId)
     expect(plantWaterFrequencyId).toBe(id)
   })
 })

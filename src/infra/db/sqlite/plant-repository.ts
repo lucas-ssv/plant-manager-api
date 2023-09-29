@@ -8,11 +8,11 @@ import { prisma } from '@/infra/db'
 export class SQLitePlantRepository
   implements FindPlantByNameRepository, AddPlantRepository
 {
-  async add(input: AddPlantRepository.AddParams): Promise<boolean> {
+  async add(input: AddPlantRepository.AddParams): Promise<string> {
     const plant = await prisma.plant.create({
       data: input,
     })
-    return plant !== null
+    return plant.id
   }
 
   async findByName(name: string): Promise<FindPlantByNameRepository.Result> {
