@@ -24,11 +24,14 @@ export class DbAddPlant implements AddPlant {
     if (plant === null) {
       const plantWaterFrequencyId =
         await this.addPlantWaterFrequencyRepository.add(plantWaterFrequency)
-      isValid = await this.addPlantRepository.add({
+      const plantId = await this.addPlantRepository.add({
         ...restPlant,
         plantWaterFrequencyId,
       })
-      await this.addEnvironmentRepository.add(restPlant.environments)
+      isValid = await this.addEnvironmentRepository.add({
+        environments: restPlant.environments,
+        plantId,
+      })
     }
     return isValid
   }

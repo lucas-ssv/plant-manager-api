@@ -1,3 +1,10 @@
 export interface AddEnvironmentRepository {
-  add: (input: string[]) => Promise<boolean>
+  add: (input: AddEnvironmentRepository.Params) => Promise<boolean>
+}
+
+export namespace AddEnvironmentRepository {
+  export interface Params {
+    environments: string[]
+    plantId: string
+  }
 }

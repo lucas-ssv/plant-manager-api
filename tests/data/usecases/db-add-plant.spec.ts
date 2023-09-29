@@ -19,10 +19,10 @@ interface SutTypes {
 }
 
 class AddEnvironmentRepositorySpy implements AddEnvironmentRepository {
-  input?: string[]
+  input?: AddEnvironmentRepository.Params
   output = true
 
-  async add(input: string[]): Promise<boolean> {
+  async add(input: AddEnvironmentRepository.Params): Promise<boolean> {
     this.input = input
     return this.output
   }
@@ -126,12 +126,31 @@ describe('DbAddPlant UseCase', () => {
   })
 
   it('should call AddEnvironmentRepository with correct data', async () => {
-    const { sut, addEnvironmentRepositorySpy } = makeSut()
+    const { sut, addPlantRepositoryMock, addEnvironmentRepositorySpy } =
+      makeSut()
+    const plantId = faker.string.uuid()
+    addPlantRepositoryMock.output = plantId
     const input = mockAddPlantParams()
 
     await sut.perform(input)
 
-    expect(addEnvironmentRepositorySpy.input).toEqual(input.environments)
+    expect(addEnvironmentRepositorySpy.input).toEqual({
+      environments: input.environments,
+      plantId,
+    })
+  })
+
+  it('should throw if AddEnvironmentRepository throws', async () => {
+    const { sut, addEnvironmentRepositorySpy } = makeSut()
+    jest
+      .spyOn(addEnvironmentRepositorySpy, 'add')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.perform(mockAddPlantParams())
+
+    await expect(promise).rejects.toThrowError()
   })
 
   it('should return true on success', async () => {
