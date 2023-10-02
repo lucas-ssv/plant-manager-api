@@ -193,6 +193,17 @@ describe('DbAddPlant UseCase', () => {
     })
   })
 
+  it('should throw if PlantEnvironmentRepository throws', async () => {
+    const { sut, addPlantRepositoryMock } = makeSut()
+    jest.spyOn(addPlantRepositoryMock, 'add').mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const promise = sut.perform(mockAddPlantParams())
+
+    await expect(promise).rejects.toThrowError()
+  })
+
   // it('should return true on success', async () => {
   //   const { sut } = makeSut()
 
