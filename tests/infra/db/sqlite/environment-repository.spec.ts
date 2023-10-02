@@ -16,8 +16,17 @@ describe('EnvironmentRepository', () => {
     const sut = new EnvironmentRepository()
     const title = faker.lorem.words()
 
+    const plant = await prisma.plant.create({
+      data: {
+        name: faker.lorem.word(),
+        description: faker.word.words(),
+        waterTips: faker.word.words(),
+        photo: faker.internet.avatar(),
+      },
+    })
     await sut.add({
-      title,
+      environments: [title],
+      plantId: plant.id,
     })
     const environment = await prisma.environment.findFirst({
       where: {

@@ -5,6 +5,7 @@ import {
   type AddPlantRepository,
   type AddPlantWaterFrequencyRepository,
   type AddEnvironmentRepository,
+  type AddPlantEnvironmentRepository,
 } from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
@@ -12,7 +13,8 @@ export class DbAddPlant implements AddPlant {
     private readonly findPlantByNameRepository: FindPlantByNameRepository,
     private readonly addPlantWaterFrequencyRepository: AddPlantWaterFrequencyRepository,
     private readonly addPlantRepository: AddPlantRepository,
-    private readonly addEnvironmentRepository: AddEnvironmentRepository
+    private readonly addEnvironmentRepository: AddEnvironmentRepository,
+    private readonly addPlantEnvironmentRepository: AddPlantEnvironmentRepository
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
@@ -20,7 +22,8 @@ export class DbAddPlant implements AddPlant {
     const plant = await this.findPlantByNameRepository.findByName(
       restPlant.name
     )
-    let isValid = false
+    const environmentsId: string[] = []
+    const isValid = false
     if (plant === null) {
       const plantWaterFrequencyId =
         await this.addPlantWaterFrequencyRepository.add(plantWaterFrequency)
@@ -28,10 +31,20 @@ export class DbAddPlant implements AddPlant {
         ...restPlant,
         plantWaterFrequencyId,
       })
-      isValid = await this.addEnvironmentRepository.add({
-        environments: restPlant.environments,
-        plantId,
-      })
+
+      for (const environment of restPlant.environments) {
+        const environmentId = await this.addEnvironmentRepository.add(
+          environment
+        )
+        environmentsId.push(environmentId)
+      }
+
+      for (const environmentId of environmentsId) {
+        await this.addPlantEnvironmentRepository.add({
+          plantId,
+          environmentId,
+        })
+      }
     }
     return isValid
   }
