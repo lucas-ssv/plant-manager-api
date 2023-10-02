@@ -23,7 +23,7 @@ export class DbAddPlant implements AddPlant {
       restPlant.name
     )
     const environmentsId: string[] = []
-    const isValid = false
+    let isValid = false
     if (plant === null) {
       const plantWaterFrequencyId =
         await this.addPlantWaterFrequencyRepository.add(plantWaterFrequency)
@@ -40,7 +40,7 @@ export class DbAddPlant implements AddPlant {
       }
 
       for (const environmentId of environmentsId) {
-        await this.addPlantEnvironmentRepository.add({
+        isValid = await this.addPlantEnvironmentRepository.add({
           plantId,
           environmentId,
         })
