@@ -1,22 +1,7 @@
-import { type AddPlantEnvironmentRepository } from '@/data/contracts'
-
 import { prisma } from '@/infra/db'
+import { SQLitePlantEnvironmentRepository } from '@/infra/db/sqlite'
 
 import { faker } from '@faker-js/faker'
-
-class SQLitePlantEnvironmentRepository
-  implements AddPlantEnvironmentRepository
-{
-  async add(input: AddPlantEnvironmentRepository.Params): Promise<boolean> {
-    const plantEnvironment = await prisma.plantEnvironment.create({
-      data: {
-        plantId: input.plantId,
-        environmentId: input.environmentId,
-      },
-    })
-    return plantEnvironment !== null
-  }
-}
 
 describe('SQLitePlantEnvironmentRepository', () => {
   beforeEach(async () => {
