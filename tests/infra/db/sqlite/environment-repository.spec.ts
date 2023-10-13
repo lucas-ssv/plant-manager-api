@@ -1,11 +1,14 @@
 import { prisma } from '@/infra/db'
-import { EnvironmentRepository } from '@/infra/db/sqlite'
+import { SQLiteEnvironmentRepository } from '@/infra/db/sqlite'
 
 import { faker } from '@faker-js/faker'
 
-describe('EnvironmentRepository', () => {
+describe('SQLiteEnvironmentRepository', () => {
   beforeEach(async () => {
+    await prisma.plantWaterFrequency.deleteMany()
+    await prisma.plantEnvironment.deleteMany()
     await prisma.environment.deleteMany()
+    await prisma.plant.deleteMany()
   })
 
   afterAll(async () => {
@@ -13,21 +16,10 @@ describe('EnvironmentRepository', () => {
   })
 
   it('should add an environment with the correct title', async () => {
-    const sut = new EnvironmentRepository()
+    const sut = new SQLiteEnvironmentRepository()
     const title = faker.lorem.words()
 
-    const plant = await prisma.plant.create({
-      data: {
-        name: faker.lorem.word(),
-        description: faker.word.words(),
-        waterTips: faker.word.words(),
-        photo: faker.internet.avatar(),
-      },
-    })
-    await sut.add({
-      environments: [title],
-      plantId: plant.id,
-    })
+    await sut.add(title)
     const environment = await prisma.environment.findFirst({
       where: {
         title,
@@ -37,14 +29,12 @@ describe('EnvironmentRepository', () => {
     expect(environment?.title).toBe(title)
   })
 
-  it('should return an environment id on success', async () => {
-    const sut = new EnvironmentRepository()
+  it('should return true on success', async () => {
+    const sut = new SQLiteEnvironmentRepository()
     const id = faker.string.uuid()
     jest.spyOn(sut, 'add').mockReturnValueOnce(Promise.resolve(id))
 
-    const environmentId = await sut.add({
-      title: faker.lorem.words(),
-    })
+    const environmentId = await sut.add(faker.lorem.words())
 
     expect(environmentId).toBe(id)
   })

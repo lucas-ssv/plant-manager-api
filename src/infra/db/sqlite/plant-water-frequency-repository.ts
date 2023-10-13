@@ -1,11 +1,11 @@
-import { type PlantWaterFrequencyRepository } from '@/data/contracts'
+import { type AddPlantWaterFrequencyRepository } from '@/data/contracts'
 
 import { prisma } from '@/infra/db'
 
 export class SQLitePlantWaterFrequencyRepository
-  implements PlantWaterFrequencyRepository
+  implements AddPlantWaterFrequencyRepository
 {
-  async add(input: PlantWaterFrequencyRepository.Params): Promise<string> {
+  async add(input: AddPlantWaterFrequencyRepository.Params): Promise<string> {
     const plantWaterFrequency = await prisma.plantWaterFrequency.create({
       data: input,
     })
