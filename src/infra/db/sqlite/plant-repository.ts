@@ -10,7 +10,13 @@ export class SQLitePlantRepository
 {
   async add(input: AddPlantRepository.AddParams): Promise<string> {
     const plant = await prisma.plant.create({
-      data: input,
+      data: {
+        name: input.name,
+        description: input.description,
+        photo: input.photo,
+        waterTips: input.waterTips,
+        plantWaterFrequencyId: input.plantWaterFrequencyId,
+      },
     })
     return plant.id
   }

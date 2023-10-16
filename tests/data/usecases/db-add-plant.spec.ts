@@ -126,7 +126,7 @@ describe('DbAddPlant UseCase', () => {
     const id = faker.string.uuid()
     addPlantWaterFrequencyRepositorySpy.output = id
     const plant = mockAddPlantParams()
-    const { plantWaterFrequency, ...restPlant } = plant
+    const { plantWaterFrequency, environments, ...restPlant } = plant
 
     await sut.perform(plant)
 

@@ -26,9 +26,7 @@ describe('DbAddEnvironment UseCase', () => {
       title,
     })
 
-    expect(addEnvironmentRepositorySpy.input).toEqual({
-      title,
-    })
+    expect(addEnvironmentRepositorySpy.input).toEqual(title)
   })
 
   it('should return an environment id on success', async () => {

@@ -18,7 +18,7 @@ export class DbAddPlant implements AddPlant {
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
-    const { plantWaterFrequency, ...restPlant } = input
+    const { plantWaterFrequency, environments, ...restPlant } = input
     const plant = await this.findPlantByNameRepository.findByName(
       restPlant.name
     )
@@ -32,7 +32,7 @@ export class DbAddPlant implements AddPlant {
         plantWaterFrequencyId,
       })
 
-      for (const environment of restPlant.environments) {
+      for (const environment of environments) {
         const environmentId = await this.addEnvironmentRepository.add(
           environment
         )
