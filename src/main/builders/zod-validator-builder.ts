@@ -40,6 +40,13 @@ export class ZodValidatorBuilder {
     return this
   }
 
+  array(): ZodValidatorBuilder {
+    this.schema = this.schema.extend({
+      [this.fieldName]: z.array(z.string()),
+    })
+    return this
+  }
+
   build(): z.ZodObject<any, 'strip', z.ZodTypeAny, any, any> {
     return this.schema
   }

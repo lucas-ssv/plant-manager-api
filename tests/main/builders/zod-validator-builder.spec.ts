@@ -32,4 +32,15 @@ describe('ZodValidatorBuilder', () => {
       })
     ).not.toThrow()
   })
+
+  it('should throw if field value is not array', () => {
+    const sut = new ZodValidatorBuilder()
+    const fieldName = faker.database.column()
+    const array = [faker.lorem.word(), faker.lorem.word()]
+
+    const schema = sut.field(fieldName).array().build()
+
+    expect(() => schema.parse({ [fieldName]: [faker.number.int()] })).toThrow()
+    expect(() => schema.parse({ [fieldName]: array })).not.toThrow()
+  })
 })
