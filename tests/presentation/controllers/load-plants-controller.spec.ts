@@ -5,16 +5,21 @@ import {
   type HttpRequest,
   type HttpResponse,
 } from '@/presentation/contracts'
+import { serverError } from '@/presentation/helpers'
 import { faker } from '@faker-js/faker'
 
 class LoadPlantsController implements Controller {
   constructor(private readonly loadPlants: LoadPlants) {}
 
   async handle(HttpRequest: HttpRequest): Promise<HttpResponse> {
-    const plants = await this.loadPlants.perform()
-    return {
-      statusCode: 200,
-      body: plants,
+    try {
+      const plants = await this.loadPlants.perform()
+      return {
+        statusCode: 200,
+        body: plants,
+      }
+    } catch (error) {
+      return serverError(error)
     }
   }
 }
@@ -73,5 +78,17 @@ describe('LoadPlantsController', () => {
       statusCode: 200,
       body: fakePlants,
     })
+  })
+
+  it('should return 500 if LoadPlants throws', async () => {
+    const loadPlantsSpy = new DbLoadPlantsSpy()
+    jest.spyOn(loadPlantsSpy, 'perform').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const sut = new LoadPlantsController(loadPlantsSpy)
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
