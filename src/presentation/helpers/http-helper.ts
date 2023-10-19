@@ -25,3 +25,8 @@ export const badRequest = (error: Error): HttpResponse => ({
 export const created = (): HttpResponse => ({
   statusCode: 201,
 })
+
+export const ok = (data: any): HttpResponse => ({
+  statusCode: 200,
+  body: data,
+})
