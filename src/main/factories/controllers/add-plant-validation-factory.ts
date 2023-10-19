@@ -11,4 +11,6 @@ export const addPlantSchema = new ZodValidatorBuilder()
     time: 'string',
     gap: 'number',
   })
+  .field('environments')
+  .array()
   .build()
