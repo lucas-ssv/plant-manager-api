@@ -19,7 +19,7 @@ class LoadPlantsController implements Controller {
   }
 }
 
-class DbLoadPlantsMock implements LoadPlants {
+class DbLoadPlantsSpy implements LoadPlants {
   callsCount = 0
   output = mockPlants()
 
@@ -52,24 +52,24 @@ const mockPlants = (): Plant[] => [
 ]
 
 describe('LoadPlantsController', () => {
-  it('should call DbLoadPlants', async () => {
-    const loadPlantsMock = new DbLoadPlantsMock()
-    const sut = new LoadPlantsController(loadPlantsMock)
+  it('should call LoadPlants', async () => {
+    const loadPlantsSpy = new DbLoadPlantsSpy()
+    const sut = new LoadPlantsController(loadPlantsSpy)
 
     await sut.handle({})
 
-    expect(loadPlantsMock.callsCount).toBe(1)
+    expect(loadPlantsSpy.callsCount).toBe(1)
   })
 
-  it('should return a list of plants on success', async () => {
-    const loadPlantsMock = new DbLoadPlantsMock()
+  it('should return 200 if LoadPlants return a list of plants', async () => {
+    const loadPlantsSpy = new DbLoadPlantsSpy()
     const fakePlants = mockPlants()
-    loadPlantsMock.output = fakePlants
-    const sut = new LoadPlantsController(loadPlantsMock)
+    loadPlantsSpy.output = fakePlants
+    const sut = new LoadPlantsController(loadPlantsSpy)
 
-    const plants = await sut.handle({})
+    const httpResponse = await sut.handle({})
 
-    expect(plants).toEqual({
+    expect(httpResponse).toEqual({
       statusCode: 200,
       body: fakePlants,
     })
