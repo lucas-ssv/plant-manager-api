@@ -20,21 +20,21 @@ export class DbAddPlant implements AddPlant {
     const plant = await this.findPlantByNameRepository.findByName(
       restPlant.name
     )
-    const environmentsId: string[] = []
     let isValid = false
     if (plant === null) {
-      for (const environment of environments) {
-        const environmentId = await this.addEnvironmentRepository.add(
-          environment
-        )
-        environmentsId.push(environmentId)
-      }
       const plantWaterFrequencyId =
         await this.addPlantWaterFrequencyRepository.add(plantWaterFrequency)
-      isValid = await this.addPlantRepository.add({
+      const plantId = await this.addPlantRepository.add({
         ...restPlant,
         plantWaterFrequencyId,
       })
+      for (const environment of environments) {
+        await this.addEnvironmentRepository.add({
+          title: environment,
+          plantId,
+        })
+      }
+      isValid = true
     }
     return isValid
   }

@@ -12,7 +12,7 @@ export class SQLitePlantRepository
     AddPlantRepository,
     LoadPlantsRepository
 {
-  async add(input: AddPlantRepository.AddParams): Promise<boolean> {
+  async add(input: AddPlantRepository.AddParams): Promise<string> {
     const plant = await prisma.plant.create({
       data: {
         name: input.name,
@@ -22,7 +22,7 @@ export class SQLitePlantRepository
         plantWaterFrequencyId: input.plantWaterFrequencyId,
       },
     })
-    return plant !== null
+    return plant.id
   }
 
   async findByName(name: string): Promise<FindPlantByNameRepository.Result> {

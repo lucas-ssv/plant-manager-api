@@ -1,3 +1,10 @@
 export interface AddEnvironmentRepository {
-  add: (input: string) => Promise<string>
+  add: (input: AddEnvironmentRepository.Params) => Promise<void>
+}
+
+export namespace AddEnvironmentRepository {
+  export interface Params {
+    title: string
+    plantId: string
+  }
 }

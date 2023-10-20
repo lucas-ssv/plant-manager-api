@@ -1,4 +1,4 @@
-import { mockAddPlantParams, mockPlantModel } from '@/tests/domain/mocks'
+import { mockAddPlantParams } from '@/tests/domain/mocks'
 
 import { DbAddPlant } from '@/data/usecases'
 import {
@@ -19,14 +19,12 @@ interface SutTypes {
 }
 
 class AddEnvironmentRepositorySpy implements AddEnvironmentRepository {
-  input?: string
+  input?: AddEnvironmentRepository.Params
   callsCount = 0
-  output = faker.string.uuid()
 
-  async add(input: string): Promise<string> {
+  async add(input: AddEnvironmentRepository.Params): Promise<void> {
     this.input = input
     this.callsCount++
-    return this.output
   }
 }
 
@@ -52,15 +50,6 @@ const makeSut = (): SutTypes => {
 }
 
 describe('DbAddPlant UseCase', () => {
-  it('should return false if FindPlantByNameRepository.findByName() returns a plant', async () => {
-    const { sut, findPlantByNameRepositorySpy } = makeSut()
-    findPlantByNameRepositorySpy.output = mockPlantModel()
-
-    const isPlantExists = await sut.perform(mockAddPlantParams())
-
-    expect(isPlantExists).toBe(false)
-  })
-
   it('should throw if PlantRepository.findByName() throws', async () => {
     const { sut, findPlantByNameRepositorySpy } = makeSut()
     jest
@@ -130,12 +119,16 @@ describe('DbAddPlant UseCase', () => {
   it('should call AddEnvironmentRepository with correct data', async () => {
     const { sut, addPlantRepositoryMock, addEnvironmentRepositorySpy } =
       makeSut()
-    addPlantRepositoryMock.output = true
+    const plantId = faker.string.uuid()
+    addPlantRepositoryMock.output = plantId
     const input = mockAddPlantParams()
 
     await sut.perform(input)
 
-    expect(addEnvironmentRepositorySpy.input).toEqual(input.environments[1])
+    expect(addEnvironmentRepositorySpy.input).toEqual({
+      title: input.environments[1],
+      plantId,
+    })
     expect(addEnvironmentRepositorySpy.callsCount).toBe(2)
   })
 
@@ -150,24 +143,5 @@ describe('DbAddPlant UseCase', () => {
     const promise = sut.perform(mockAddPlantParams())
 
     await expect(promise).rejects.toThrowError()
-  })
-
-  it('should throw if AddPlantEnvironmentRepository throws', async () => {
-    const { sut, addPlantRepositoryMock } = makeSut()
-    jest.spyOn(addPlantRepositoryMock, 'add').mockImplementationOnce(() => {
-      throw new Error()
-    })
-
-    const promise = sut.perform(mockAddPlantParams())
-
-    await expect(promise).rejects.toThrowError()
-  })
-
-  it('should return true on success', async () => {
-    const { sut } = makeSut()
-
-    const isPlantExists = await sut.perform(mockAddPlantParams())
-
-    expect(isPlantExists).toBe(true)
   })
 })

@@ -18,7 +18,16 @@ describe('SQLiteEnvironmentRepository', () => {
     const sut = new SQLiteEnvironmentRepository()
     const title = faker.lorem.words()
 
-    await sut.add(title)
+    const plant = await prisma.plant.create({
+      data: {
+        name: faker.lorem.word(),
+        description: faker.lorem.words(),
+      },
+    })
+    await sut.add({
+      title,
+      plantId: plant.id,
+    })
     const environment = await prisma.environment.findFirst({
       where: {
         title,
@@ -26,15 +35,5 @@ describe('SQLiteEnvironmentRepository', () => {
     })
 
     expect(environment?.title).toBe(title)
-  })
-
-  it('should return true on success', async () => {
-    const sut = new SQLiteEnvironmentRepository()
-    const id = faker.string.uuid()
-    jest.spyOn(sut, 'add').mockReturnValueOnce(Promise.resolve(id))
-
-    const environmentId = await sut.add(faker.lorem.words())
-
-    expect(environmentId).toBe(id)
   })
 })
