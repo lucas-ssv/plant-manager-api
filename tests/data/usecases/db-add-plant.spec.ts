@@ -1,4 +1,4 @@
-import { mockAddPlantParams } from '@/tests/domain/mocks'
+import { mockAddPlantParams, mockPlantModel } from '@/tests/domain/mocks'
 
 import { DbAddPlant } from '@/data/usecases'
 import {
@@ -50,7 +50,16 @@ const makeSut = (): SutTypes => {
 }
 
 describe('DbAddPlant UseCase', () => {
-  it('should throw if PlantRepository.findByName() throws', async () => {
+  it('should return false if FindPlantByNameRepository.findByName() returns a plant', async () => {
+    const { sut, findPlantByNameRepositorySpy } = makeSut()
+    findPlantByNameRepositorySpy.output = mockPlantModel()
+
+    const isPlantExists = await sut.perform(mockAddPlantParams())
+
+    expect(isPlantExists).toBe(false)
+  })
+
+  it('should throw if FindPlantByNameRepository.findByName() throws', async () => {
     const { sut, findPlantByNameRepositorySpy } = makeSut()
     jest
       .spyOn(findPlantByNameRepositorySpy, 'findByName')
