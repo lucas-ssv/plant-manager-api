@@ -1,11 +1,10 @@
 import { type AddPlantRepository } from '@/data/contracts'
-import { faker } from '@faker-js/faker'
 
 export class AddPlantRepositoryMock implements AddPlantRepository {
   input?: AddPlantRepository.AddParams
-  output = faker.string.uuid()
+  output = true
 
-  async add(input: AddPlantRepository.AddParams): Promise<string> {
+  async add(input: AddPlantRepository.AddParams): Promise<boolean> {
     this.input = input
     return this.output
   }

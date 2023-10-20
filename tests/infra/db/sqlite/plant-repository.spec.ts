@@ -6,9 +6,8 @@ import { faker } from '@faker-js/faker'
 describe('SQLitePlantRepository', () => {
   beforeEach(async () => {
     await prisma.plantWaterFrequency.deleteMany()
-    await prisma.plantEnvironment.deleteMany()
-    await prisma.environment.deleteMany()
     await prisma.plant.deleteMany()
+    await prisma.environment.deleteMany()
   })
 
   afterAll(async () => {
@@ -49,8 +48,7 @@ describe('SQLitePlantRepository', () => {
   it('should add a plant on success', async () => {
     const sut = new SQLitePlantRepository()
     const plantWaterFrequencyId = faker.string.uuid()
-    const fakePlantId = faker.string.uuid()
-    jest.spyOn(sut, 'add').mockReturnValueOnce(Promise.resolve(fakePlantId))
+    jest.spyOn(sut, 'add').mockReturnValueOnce(Promise.resolve(true))
 
     const { id } = await prisma.plantWaterFrequency.create({
       data: {
@@ -60,7 +58,7 @@ describe('SQLitePlantRepository', () => {
         gap: faker.number.int({ max: 2 }),
       },
     })
-    const plantId = await sut.add({
+    const isValid = await sut.add({
       name: faker.lorem.word(),
       description: faker.word.words(),
       waterTips: faker.word.words(),
@@ -68,7 +66,61 @@ describe('SQLitePlantRepository', () => {
       plantWaterFrequencyId,
     })
 
-    expect(plantId).toBe(fakePlantId)
+    expect(isValid).toBe(true)
     expect(plantWaterFrequencyId).toBe(id)
+  })
+
+  it('should load all plants on success', async () => {
+    const sut = new SQLitePlantRepository()
+
+    const plantWaterFrequency = await prisma.plantWaterFrequency.create({
+      data: {
+        title: faker.lorem.word(),
+        time: faker.string.numeric(),
+        gap: faker.number.int({ max: 1 }),
+      },
+    })
+    const plant = await prisma.plant.create({
+      data: {
+        name: faker.lorem.words(),
+        description: faker.lorem.words(),
+        plantWaterFrequencyId: plantWaterFrequency.id,
+      },
+    })
+    const environment = await prisma.environment.create({
+      data: {
+        title: faker.lorem.word(),
+        plantId: plant.id,
+      },
+    })
+    const plants = await sut.loadMany()
+
+    expect(plants).toEqual([
+      {
+        id: plant.id,
+        name: plant.name,
+        description: plant.description,
+        waterTips: plant.waterTips,
+        photo: plant.photo,
+        createdAt: plant.createdAt,
+        updatedAt: plant.updatedAt,
+        plantWaterFrequency: {
+          id: plantWaterFrequency.id,
+          title: plantWaterFrequency.title,
+          time: plantWaterFrequency.time,
+          gap: plantWaterFrequency.gap,
+          createdAt: plantWaterFrequency.createdAt,
+          updatedAt: plantWaterFrequency.updatedAt,
+        },
+        environments: [
+          {
+            id: environment.id,
+            title: environment.title,
+            createdAt: environment.createdAt,
+            updatedAt: environment.updatedAt,
+          },
+        ],
+      },
+    ])
   })
 })

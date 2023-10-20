@@ -1,5 +1,9 @@
 import { type Plant } from '@/domain/entities'
 
 export interface LoadPlantsRepository {
-  loadMany: () => Promise<Plant[]>
+  loadMany: () => Promise<LoadPlantsRepository.Result[]>
+}
+
+export namespace LoadPlantsRepository {
+  export interface Result extends Plant {}
 }

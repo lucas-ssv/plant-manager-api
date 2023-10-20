@@ -6,10 +6,7 @@ import {
   AddPlantWaterFrequencyRepositorySpy,
   FindPlantByNameRepositorySpy,
 } from '@/tests/data/mocks'
-import {
-  type AddPlantEnvironmentRepository,
-  type AddEnvironmentRepository,
-} from '@/data/contracts'
+import { type AddEnvironmentRepository } from '@/data/contracts'
 
 import { faker } from '@faker-js/faker'
 
@@ -19,7 +16,6 @@ interface SutTypes {
   addPlantWaterFrequencyRepositorySpy: AddPlantWaterFrequencyRepositorySpy
   addPlantRepositoryMock: AddPlantRepositoryMock
   addEnvironmentRepositorySpy: AddEnvironmentRepositorySpy
-  addPlantEnvironmentRepositorySpy: AddPlantEnvironmentRepositorySpy
 }
 
 class AddEnvironmentRepositorySpy implements AddEnvironmentRepository {
@@ -34,32 +30,17 @@ class AddEnvironmentRepositorySpy implements AddEnvironmentRepository {
   }
 }
 
-class AddPlantEnvironmentRepositorySpy
-  implements AddPlantEnvironmentRepository
-{
-  input?: object
-  output = true
-
-  async add(input: AddPlantEnvironmentRepository.Params): Promise<boolean> {
-    this.input = input
-    return this.output
-  }
-}
-
 const makeSut = (): SutTypes => {
   const findPlantByNameRepositorySpy = new FindPlantByNameRepositorySpy()
   const addPlantWaterFrequencyRepositorySpy =
     new AddPlantWaterFrequencyRepositorySpy()
   const addPlantRepositoryMock = new AddPlantRepositoryMock()
   const addEnvironmentRepositorySpy = new AddEnvironmentRepositorySpy()
-  const addPlantEnvironmentRepositorySpy =
-    new AddPlantEnvironmentRepositorySpy()
   const sut = new DbAddPlant(
     findPlantByNameRepositorySpy,
     addPlantWaterFrequencyRepositorySpy,
     addPlantRepositoryMock,
-    addEnvironmentRepositorySpy,
-    addPlantEnvironmentRepositorySpy
+    addEnvironmentRepositorySpy
   )
   return {
     sut,
@@ -67,7 +48,6 @@ const makeSut = (): SutTypes => {
     addPlantWaterFrequencyRepositorySpy,
     addPlantRepositoryMock,
     addEnvironmentRepositorySpy,
-    addPlantEnvironmentRepositorySpy,
   }
 }
 
@@ -150,8 +130,7 @@ describe('DbAddPlant UseCase', () => {
   it('should call AddEnvironmentRepository with correct data', async () => {
     const { sut, addPlantRepositoryMock, addEnvironmentRepositorySpy } =
       makeSut()
-    const plantId = faker.string.uuid()
-    addPlantRepositoryMock.output = plantId
+    addPlantRepositoryMock.output = true
     const input = mockAddPlantParams()
 
     await sut.perform(input)
@@ -171,26 +150,6 @@ describe('DbAddPlant UseCase', () => {
     const promise = sut.perform(mockAddPlantParams())
 
     await expect(promise).rejects.toThrowError()
-  })
-
-  it('should call AddPlantEnvironmentRepository with correct data', async () => {
-    const {
-      sut,
-      addPlantRepositoryMock,
-      addEnvironmentRepositorySpy,
-      addPlantEnvironmentRepositorySpy,
-    } = makeSut()
-    const plantId = faker.string.uuid()
-    const environmentId = faker.string.uuid()
-    addPlantRepositoryMock.output = plantId
-    addEnvironmentRepositorySpy.output = environmentId
-
-    await sut.perform(mockAddPlantParams())
-
-    expect(addPlantEnvironmentRepositorySpy.input).toEqual({
-      plantId,
-      environmentId,
-    })
   })
 
   it('should throw if AddPlantEnvironmentRepository throws', async () => {

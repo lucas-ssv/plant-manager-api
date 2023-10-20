@@ -1,7 +1,7 @@
 import { type PlantParams } from '@/domain/usecases'
 
 export interface AddPlantRepository {
-  add: (input: AddPlantRepository.AddParams) => Promise<string>
+  add: (input: AddPlantRepository.AddParams) => Promise<boolean>
 }
 
 export namespace AddPlantRepository {

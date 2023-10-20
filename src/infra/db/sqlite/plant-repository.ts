@@ -1,4 +1,5 @@
 import {
+  type LoadPlantsRepository,
   type AddPlantRepository,
   type FindPlantByNameRepository,
 } from '@/data/contracts'
@@ -6,9 +7,12 @@ import {
 import { prisma } from '@/infra/db'
 
 export class SQLitePlantRepository
-  implements FindPlantByNameRepository, AddPlantRepository
+  implements
+    FindPlantByNameRepository,
+    AddPlantRepository,
+    LoadPlantsRepository
 {
-  async add(input: AddPlantRepository.AddParams): Promise<string> {
+  async add(input: AddPlantRepository.AddParams): Promise<boolean> {
     const plant = await prisma.plant.create({
       data: {
         name: input.name,
@@ -18,7 +22,7 @@ export class SQLitePlantRepository
         plantWaterFrequencyId: input.plantWaterFrequencyId,
       },
     })
-    return plant.id
+    return plant !== null
   }
 
   async findByName(name: string): Promise<FindPlantByNameRepository.Result> {
@@ -27,10 +31,10 @@ export class SQLitePlantRepository
         name,
       },
       include: {
-        PlantWaterFrequency: true,
+        plantWaterFrequency: true,
         environments: {
           include: {
-            environment: true,
+            plant: true,
           },
         },
       },
@@ -44,7 +48,28 @@ export class SQLitePlantRepository
           environments: plant?.environments,
           photo: plant?.photo,
           waterTips: plant?.waterTips,
-          plantWaterFrequency: plant?.PlantWaterFrequency,
+          plantWaterFrequency: plant?.plantWaterFrequency,
         } as any)
+  }
+
+  async loadMany(): Promise<LoadPlantsRepository.Result[]> {
+    const plants = await prisma.plant.findMany({
+      include: {
+        plantWaterFrequency: true,
+        environments: true,
+      },
+    })
+    const plantsData = plants.map((plant) => {
+      const { plantWaterFrequencyId, environments, ...restPlant } = plant
+      const environmentsData = environments.map((environment) => {
+        const { plantId, ...restEnvironment } = environment
+        return restEnvironment
+      })
+      return {
+        ...restPlant,
+        environments: environmentsData,
+      }
+    })
+    return plantsData
   }
 }
