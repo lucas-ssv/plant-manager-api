@@ -6,7 +6,7 @@ import { type LoadPlantsRepository } from '@/data/contracts'
 export class DbLoadPlants implements LoadPlants {
   constructor(private readonly loadPlantsRepository: LoadPlantsRepository) {}
 
-  async perform(): Promise<Plant[]> {
-    return await this.loadPlantsRepository.loadMany()
+  async perform(environment?: string): Promise<Plant[]> {
+    return await this.loadPlantsRepository.loadMany(environment)
   }
 }

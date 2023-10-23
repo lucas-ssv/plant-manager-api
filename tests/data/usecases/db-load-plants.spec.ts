@@ -1,13 +1,16 @@
 import { DbLoadPlants } from '@/data/usecases'
 import { LoadPlantsRepositorySpy } from '@/tests/data/mocks'
+import { faker } from '@faker-js/faker'
 
 describe('DbLoadPlants UseCase', () => {
-  it('should call LoadPlantsRepository only once', async () => {
+  it('should call LoadPlantsRepository with correct data', async () => {
     const loadPlantsRepositorySpy = new LoadPlantsRepositorySpy()
     const sut = new DbLoadPlants(loadPlantsRepositorySpy)
+    const environment = faker.lorem.word()
 
-    await sut.perform()
+    await sut.perform(environment)
 
+    expect(loadPlantsRepositorySpy.input).toBe(environment)
     expect(loadPlantsRepositorySpy.callsCount).toBe(1)
   })
 

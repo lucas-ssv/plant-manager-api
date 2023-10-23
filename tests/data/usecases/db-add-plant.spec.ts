@@ -79,9 +79,10 @@ describe('DbAddPlant UseCase', () => {
     await sut.perform(input)
 
     expect(addPlantWaterFrequencyRepositorySpy.input).toEqual({
-      title: input.plantWaterFrequency?.title,
+      description: input.plantWaterFrequency?.description,
       time: input.plantWaterFrequency?.time,
       gap: input.plantWaterFrequency?.gap,
+      lastDateWatering: input.plantWaterFrequency?.lastDateWatering,
     })
   })
 

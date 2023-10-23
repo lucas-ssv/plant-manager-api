@@ -9,14 +9,15 @@ export const mockAddPlantParams = (): PlantParams => ({
   waterTips: faker.word.words(),
   photo: faker.internet.url(),
   plantWaterFrequency: {
-    title: faker.lorem.words(),
-    time: faker.lorem.word(),
+    description: faker.lorem.words(),
+    time: faker.number.int(1),
     gap: faker.number.int(),
+    lastDateWatering: new Date(),
   },
   environments: [faker.lorem.word(), faker.lorem.word()],
 })
 
-export const mockPlantModel = (): Plant => ({
+export const mockPlantModel = (environment = faker.word.words()): Plant => ({
   id: faker.string.uuid(),
   name: faker.word.words({ count: 1 }),
   description: faker.word.words(),
@@ -25,14 +26,15 @@ export const mockPlantModel = (): Plant => ({
   environments: [
     {
       id: faker.string.uuid(),
-      title: faker.word.words(),
+      title: environment,
     },
   ],
   plantWaterFrequency: {
     id: faker.string.uuid(),
-    title: faker.word.words(),
-    time: faker.lorem.word(),
+    description: faker.word.words(),
+    time: faker.number.int(1),
     gap: faker.number.int(),
+    lastDateWatering: new Date(),
   },
 })
 
