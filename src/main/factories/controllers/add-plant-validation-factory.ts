@@ -7,8 +7,8 @@ export const addPlantSchema = new ZodValidatorBuilder()
   .string()
   .field('plantWaterFrequency')
   .object({
-    title: 'string',
-    time: 'string',
+    description: 'string',
+    time: 'number',
     gap: 'number',
   })
   .field('environments')

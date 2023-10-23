@@ -20,8 +20,8 @@ describe('SQLitePlantRepository', () => {
 
     const plantWaterFrequency = await prisma.plantWaterFrequency.create({
       data: {
-        title: faker.lorem.words(),
-        time: faker.string.numeric(),
+        description: faker.lorem.words(),
+        time: faker.number.int(1),
         gap: faker.number.int(1),
       },
     })
@@ -54,8 +54,8 @@ describe('SQLitePlantRepository', () => {
     const { id } = await prisma.plantWaterFrequency.create({
       data: {
         id: plantWaterFrequencyId,
-        title: faker.lorem.words(),
-        time: faker.lorem.word(),
+        description: faker.lorem.words(),
+        time: faker.number.int({ max: 2 }),
         gap: faker.number.int({ max: 2 }),
       },
     })
@@ -76,8 +76,8 @@ describe('SQLitePlantRepository', () => {
 
     const plantWaterFrequency = await prisma.plantWaterFrequency.create({
       data: {
-        title: faker.lorem.word(),
-        time: faker.string.numeric(),
+        description: faker.lorem.word(),
+        time: faker.number.int(1),
         gap: faker.number.int({ max: 1 }),
       },
     })
@@ -107,7 +107,7 @@ describe('SQLitePlantRepository', () => {
         updatedAt: plant.updatedAt,
         plantWaterFrequency: {
           id: plantWaterFrequency.id,
-          title: plantWaterFrequency.title,
+          description: plantWaterFrequency.description,
           time: plantWaterFrequency.time,
           gap: plantWaterFrequency.gap,
           createdAt: plantWaterFrequency.createdAt,

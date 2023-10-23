@@ -16,11 +16,11 @@ describe('SQLitePlantWaterFrequencyRepository', () => {
 
   it('should add plant water frequency', async () => {
     const sut = new SQLitePlantWaterFrequencyRepository()
-    const title = faker.lorem.words()
+    const description = faker.lorem.words()
 
     const plantWaterFrequencyId = await sut.add({
-      title,
-      time: faker.lorem.word(),
+      description,
+      time: faker.number.int(1),
       gap: faker.number.int({ max: 1 }),
     })
     const plantWaterFrequency = await prisma.plantWaterFrequency.findUnique({

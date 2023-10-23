@@ -1,6 +1,6 @@
 export interface PlantWaterFrequency {
   id: string
-  title: string
-  time: string
+  description: string
+  time: number
   gap: number
 }

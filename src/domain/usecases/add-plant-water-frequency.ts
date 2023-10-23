@@ -3,7 +3,7 @@ export interface AddPlantWaterFrequency {
 }
 
 export interface AddPlantWaterFrequencyParams {
-  title: string
-  time: string
+  description: string
+  time: number
   gap: number
 }
