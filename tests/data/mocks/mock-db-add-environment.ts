@@ -1,13 +1,9 @@
 import { type AddEnvironmentRepository } from '@/data/contracts'
 
-import { faker } from '@faker-js/faker'
-
 export class AddEnvironmentRepositorySpy implements AddEnvironmentRepository {
-  input?: string
-  output = faker.string.uuid()
+  input?: AddEnvironmentRepository.Params
 
-  async add(input: string): Promise<string> {
+  async add(input: AddEnvironmentRepository.Params): Promise<void> {
     this.input = input
-    return this.output
   }
 }

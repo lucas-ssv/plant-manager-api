@@ -1,7 +1,8 @@
 export interface AddEnvironment {
-  perform: (input: AddEnvironmentParams) => Promise<string>
+  perform: (input: AddEnvironmentParams) => Promise<void>
 }
 
 export interface AddEnvironmentParams {
   title: string
+  plantId: string
 }

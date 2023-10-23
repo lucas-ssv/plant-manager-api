@@ -9,7 +9,7 @@ export class DbAddEnvironment implements AddEnvironment {
     private readonly addEnvironmentRepository: AddEnvironmentRepository
   ) {}
 
-  async perform(input: AddEnvironmentParams): Promise<string> {
-    return await this.addEnvironmentRepository.add(input.title)
+  async perform(input: AddEnvironmentParams): Promise<void> {
+    await this.addEnvironmentRepository.add(input)
   }
 }

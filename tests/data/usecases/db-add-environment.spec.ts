@@ -20,24 +20,14 @@ const makeSut = (): SutTypes => {
 describe('DbAddEnvironment UseCase', () => {
   it('should call AddEnvironmentRepository with correct data', async () => {
     const { sut, addEnvironmentRepositorySpy } = makeSut()
-    const title = faker.lorem.words()
-
-    await sut.perform({
-      title,
-    })
-
-    expect(addEnvironmentRepositorySpy.input).toEqual(title)
-  })
-
-  it('should return an environment id on success', async () => {
-    const { sut, addEnvironmentRepositorySpy } = makeSut()
-    addEnvironmentRepositorySpy.output = faker.string.uuid()
-
-    const environmentId = await sut.perform({
+    const input = {
       title: faker.lorem.words(),
-    })
+      plantId: faker.string.uuid(),
+    }
 
-    expect(environmentId).toBe(addEnvironmentRepositorySpy.output)
+    await sut.perform(input)
+
+    expect(addEnvironmentRepositorySpy.input).toEqual(input)
   })
 
   it('should throw if AddEnvironmentRepository throws', async () => {
@@ -50,6 +40,7 @@ describe('DbAddEnvironment UseCase', () => {
 
     const promise = sut.perform({
       title: faker.lorem.words(),
+      plantId: faker.string.uuid(),
     })
 
     await expect(promise).rejects.toThrowError()
