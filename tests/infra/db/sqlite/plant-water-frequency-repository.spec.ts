@@ -22,6 +22,7 @@ describe('SQLitePlantWaterFrequencyRepository', () => {
       description,
       time: faker.number.int(1),
       gap: faker.number.int({ max: 1 }),
+      lastDateWatering: null,
     })
     const plantWaterFrequency = await prisma.plantWaterFrequency.findUnique({
       where: {
