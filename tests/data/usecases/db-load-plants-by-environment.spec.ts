@@ -1,40 +1,68 @@
+import { type Plant } from '@/domain/entities'
+import { type LoadPlantsByEnvironment } from '@/domain/usecases'
+import { mockPlantModels } from '@/tests/domain/mocks'
+
 import { faker } from '@faker-js/faker'
 
-class DbLoadPlantsByEnvironment {
+class DbLoadPlantsByEnvironment implements LoadPlantsByEnvironment {
   constructor(
     private readonly loadPlantsByEnvironment: LoadPlantsByEnvironmentRepository
   ) {}
 
-  async perform(environment: string): Promise<void> {
-    await this.loadPlantsByEnvironment.loadManyByEnvironment(environment)
+  async perform(
+    environment: string
+  ): Promise<LoadPlantsByEnvironmentRepository.Result[]> {
+    return await this.loadPlantsByEnvironment.loadManyByEnvironment(environment)
   }
 }
 
 interface LoadPlantsByEnvironmentRepository {
-  loadManyByEnvironment: (environment: string) => Promise<void>
+  loadManyByEnvironment: (
+    environment: string
+  ) => Promise<LoadPlantsByEnvironmentRepository.Result[]>
 }
 
-class LoadPlantsByEnvironmentRepositoryMock
+namespace LoadPlantsByEnvironmentRepository {
+  export interface Result extends Plant {}
+}
+
+class LoadPlantsByEnvironmentRepositorySpy
   implements LoadPlantsByEnvironmentRepository
 {
   input?: string
+  output = mockPlantModels()
 
-  async loadManyByEnvironment(environment: string): Promise<void> {
+  async loadManyByEnvironment(
+    environment: string
+  ): Promise<LoadPlantsByEnvironmentRepository.Result[]> {
     this.input = environment
+    return this.output
   }
 }
 
 describe('DbLoadPlantsByEnvironment', () => {
   it('should call LoadPlantsByEnvironmentRepository with correct data', async () => {
-    const loadPlantsByEnvironmentRepositoryMock =
-      new LoadPlantsByEnvironmentRepositoryMock()
+    const loadPlantsByEnvironmentRepositorySpy =
+      new LoadPlantsByEnvironmentRepositorySpy()
     const sut = new DbLoadPlantsByEnvironment(
-      loadPlantsByEnvironmentRepositoryMock
+      loadPlantsByEnvironmentRepositorySpy
     )
     const fakeEnvironment = faker.lorem.word()
 
     await sut.perform(fakeEnvironment)
 
-    expect(loadPlantsByEnvironmentRepositoryMock.input).toBe(fakeEnvironment)
+    expect(loadPlantsByEnvironmentRepositorySpy.input).toBe(fakeEnvironment)
+  })
+
+  it('should return a list of plants by environment on success', async () => {
+    const loadPlantsByEnvironmentRepositorySpy =
+      new LoadPlantsByEnvironmentRepositorySpy()
+    const sut = new DbLoadPlantsByEnvironment(
+      loadPlantsByEnvironmentRepositorySpy
+    )
+
+    const plants = await sut.perform(faker.lorem.word())
+
+    expect(loadPlantsByEnvironmentRepositorySpy.output).toEqual(plants)
   })
 })
