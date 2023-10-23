@@ -65,4 +65,21 @@ describe('DbLoadPlantsByEnvironment', () => {
 
     expect(loadPlantsByEnvironmentRepositorySpy.output).toEqual(plants)
   })
+
+  it('should throw if LoadPlantsByEnvironmentRepository throws', async () => {
+    const loadPlantsByEnvironmentRepositorySpy =
+      new LoadPlantsByEnvironmentRepositorySpy()
+    jest
+      .spyOn(loadPlantsByEnvironmentRepositorySpy, 'loadManyByEnvironment')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+    const sut = new DbLoadPlantsByEnvironment(
+      loadPlantsByEnvironmentRepositorySpy
+    )
+
+    const promise = sut.perform(faker.lorem.word())
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
