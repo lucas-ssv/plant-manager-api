@@ -3,4 +3,5 @@ export interface PlantWaterFrequency {
   description: string
   time: number
   gap: number
+  lastDateWatering: Date | null
 }

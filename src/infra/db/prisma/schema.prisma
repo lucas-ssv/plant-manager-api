@@ -39,6 +39,7 @@ model PlantWaterFrequency {
   description String
   time Int
   gap Int
+  lastDateWatering DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -110,6 +110,7 @@ describe('SQLitePlantRepository', () => {
           description: plantWaterFrequency.description,
           time: plantWaterFrequency.time,
           gap: plantWaterFrequency.gap,
+          lastDateWatering: plantWaterFrequency.lastDateWatering,
           createdAt: plantWaterFrequency.createdAt,
           updatedAt: plantWaterFrequency.updatedAt,
         },
