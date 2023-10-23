@@ -1,52 +1,28 @@
-import { type Plant } from '@/domain/entities'
-import { type LoadPlantsByEnvironment } from '@/domain/usecases'
-import { mockPlantModels } from '@/tests/domain/mocks'
+import { DbLoadPlantsByEnvironment } from '@/data/usecases'
+import { LoadPlantsByEnvironmentRepositorySpy } from '@/tests/data/mocks'
 
 import { faker } from '@faker-js/faker'
 
-class DbLoadPlantsByEnvironment implements LoadPlantsByEnvironment {
-  constructor(
-    private readonly loadPlantsByEnvironment: LoadPlantsByEnvironmentRepository
-  ) {}
-
-  async perform(
-    environment: string
-  ): Promise<LoadPlantsByEnvironmentRepository.Result[]> {
-    return await this.loadPlantsByEnvironment.loadManyByEnvironment(environment)
-  }
+interface SutOutput {
+  sut: DbLoadPlantsByEnvironment
+  loadPlantsByEnvironmentRepositorySpy: LoadPlantsByEnvironmentRepositorySpy
 }
 
-interface LoadPlantsByEnvironmentRepository {
-  loadManyByEnvironment: (
-    environment: string
-  ) => Promise<LoadPlantsByEnvironmentRepository.Result[]>
-}
-
-namespace LoadPlantsByEnvironmentRepository {
-  export interface Result extends Plant {}
-}
-
-class LoadPlantsByEnvironmentRepositorySpy
-  implements LoadPlantsByEnvironmentRepository
-{
-  input?: string
-  output = mockPlantModels()
-
-  async loadManyByEnvironment(
-    environment: string
-  ): Promise<LoadPlantsByEnvironmentRepository.Result[]> {
-    this.input = environment
-    return this.output
+const makeSut = (): SutOutput => {
+  const loadPlantsByEnvironmentRepositorySpy =
+    new LoadPlantsByEnvironmentRepositorySpy()
+  const sut = new DbLoadPlantsByEnvironment(
+    loadPlantsByEnvironmentRepositorySpy
+  )
+  return {
+    sut,
+    loadPlantsByEnvironmentRepositorySpy,
   }
 }
 
 describe('DbLoadPlantsByEnvironment', () => {
   it('should call LoadPlantsByEnvironmentRepository with correct data', async () => {
-    const loadPlantsByEnvironmentRepositorySpy =
-      new LoadPlantsByEnvironmentRepositorySpy()
-    const sut = new DbLoadPlantsByEnvironment(
-      loadPlantsByEnvironmentRepositorySpy
-    )
+    const { sut, loadPlantsByEnvironmentRepositorySpy } = makeSut()
     const fakeEnvironment = faker.lorem.word()
 
     await sut.perform(fakeEnvironment)
@@ -55,11 +31,7 @@ describe('DbLoadPlantsByEnvironment', () => {
   })
 
   it('should return a list of plants by environment on success', async () => {
-    const loadPlantsByEnvironmentRepositorySpy =
-      new LoadPlantsByEnvironmentRepositorySpy()
-    const sut = new DbLoadPlantsByEnvironment(
-      loadPlantsByEnvironmentRepositorySpy
-    )
+    const { sut, loadPlantsByEnvironmentRepositorySpy } = makeSut()
 
     const plants = await sut.perform(faker.lorem.word())
 
@@ -67,16 +39,12 @@ describe('DbLoadPlantsByEnvironment', () => {
   })
 
   it('should throw if LoadPlantsByEnvironmentRepository throws', async () => {
-    const loadPlantsByEnvironmentRepositorySpy =
-      new LoadPlantsByEnvironmentRepositorySpy()
+    const { sut, loadPlantsByEnvironmentRepositorySpy } = makeSut()
     jest
       .spyOn(loadPlantsByEnvironmentRepositorySpy, 'loadManyByEnvironment')
       .mockImplementationOnce(() => {
         throw new Error()
       })
-    const sut = new DbLoadPlantsByEnvironment(
-      loadPlantsByEnvironmentRepositorySpy
-    )
 
     const promise = sut.perform(faker.lorem.word())
 
