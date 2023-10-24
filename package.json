@@ -51,7 +51,7 @@
   "lint-staged": {
     "*.{js,ts}": [
       "npm run lint",
-      "jest --passWithNoTests"
+      "npm run test"
     ]
   },
   "prisma": {

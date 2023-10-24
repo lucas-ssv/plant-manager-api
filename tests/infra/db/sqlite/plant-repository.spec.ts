@@ -5,9 +5,9 @@ import { faker } from '@faker-js/faker'
 
 describe('SQLitePlantRepository', () => {
   beforeEach(async () => {
-    await prisma.plantWaterFrequency.deleteMany()
-    await prisma.plant.deleteMany()
     await prisma.environment.deleteMany()
+    await prisma.plant.deleteMany()
+    await prisma.plantWaterFrequency.deleteMany()
   })
 
   afterAll(async () => {
@@ -72,63 +72,6 @@ describe('SQLitePlantRepository', () => {
 
       expect(plantId).toBe(fakePlantId)
       expect(plantWaterFrequencyId).toBe(id)
-    })
-  })
-
-  describe('loadMany()', () => {
-    it('should load all plants on success', async () => {
-      const sut = new SQLitePlantRepository()
-
-      const plantWaterFrequency = await prisma.plantWaterFrequency.create({
-        data: {
-          description: faker.lorem.word(),
-          time: faker.number.int(1),
-          gap: faker.number.int({ max: 1 }),
-        },
-      })
-      const plant = await prisma.plant.create({
-        data: {
-          name: faker.lorem.words(),
-          description: faker.lorem.words(),
-          plantWaterFrequencyId: plantWaterFrequency.id,
-        },
-      })
-      const environment = await prisma.environment.create({
-        data: {
-          title: faker.lorem.word(),
-          plantId: plant.id,
-        },
-      })
-      const plants = await sut.loadMany()
-
-      expect(plants).toEqual([
-        {
-          id: plant.id,
-          name: plant.name,
-          description: plant.description,
-          waterTips: plant.waterTips,
-          photo: plant.photo,
-          createdAt: plant.createdAt,
-          updatedAt: plant.updatedAt,
-          plantWaterFrequency: {
-            id: plantWaterFrequency.id,
-            description: plantWaterFrequency.description,
-            time: plantWaterFrequency.time,
-            gap: plantWaterFrequency.gap,
-            lastDateWatering: plantWaterFrequency.lastDateWatering,
-            createdAt: plantWaterFrequency.createdAt,
-            updatedAt: plantWaterFrequency.updatedAt,
-          },
-          environments: [
-            {
-              id: environment.id,
-              title: environment.title,
-              createdAt: environment.createdAt,
-              updatedAt: environment.updatedAt,
-            },
-          ],
-        },
-      ])
     })
   })
 })

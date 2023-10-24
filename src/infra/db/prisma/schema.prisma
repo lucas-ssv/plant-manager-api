@@ -27,11 +27,11 @@ model Plant {
 model Environment {
   id String @id @default(uuid())
   title String
-  plantId String?
+  plantId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  plant Plant? @relation(fields: [plantId], references: [id])
+  plant Plant @relation(fields: [plantId], references: [id])
 }
 
 model PlantWaterFrequency {

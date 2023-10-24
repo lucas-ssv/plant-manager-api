@@ -1,4 +1,4 @@
-import { type Plant } from '@/domain/entities'
+import { type LoadPlantsByEnvironment } from '@/domain/usecases'
 
 export interface LoadPlantsByEnvironmentRepository {
   loadManyByEnvironment: (
@@ -7,5 +7,5 @@ export interface LoadPlantsByEnvironmentRepository {
 }
 
 export namespace LoadPlantsByEnvironmentRepository {
-  export interface Result extends Plant {}
+  export interface Result extends LoadPlantsByEnvironment.Result {}
 }
