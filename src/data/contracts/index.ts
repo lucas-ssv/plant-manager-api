@@ -1,7 +1,5 @@
 export * from './find-plant-by-name-repository'
 export * from './add-plant-repository'
 export * from './load-environments-repository'
-export * from './load-plants-repository'
 export * from './add-plant-water-frequency-repository'
 export * from './add-environment-repository'
-export * from './load-plants-by-environment-repository'

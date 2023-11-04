@@ -1,5 +1,4 @@
 import {
-  type LoadPlantsRepository,
   type AddPlantRepository,
   type FindPlantByNameRepository,
 } from '@/data/contracts'
@@ -7,10 +6,7 @@ import {
 import { prisma } from '@/infra/db'
 
 export class SQLitePlantRepository
-  implements
-    FindPlantByNameRepository,
-    AddPlantRepository,
-    LoadPlantsRepository
+  implements FindPlantByNameRepository, AddPlantRepository
 {
   async add(input: AddPlantRepository.AddParams): Promise<string> {
     const plant = await prisma.plant.create({
@@ -50,26 +46,5 @@ export class SQLitePlantRepository
           waterTips: plant?.waterTips,
           plantWaterFrequency: plant?.plantWaterFrequency,
         } as any)
-  }
-
-  async loadMany(): Promise<LoadPlantsRepository.Result[]> {
-    const plants = await prisma.plant.findMany({
-      include: {
-        plantWaterFrequency: true,
-        environments: true,
-      },
-    })
-    const plantsData = plants.map((plant) => {
-      const { plantWaterFrequencyId, environments, ...restPlant } = plant
-      const environmentsData = environments.map((environment) => {
-        const { plantId, ...restEnvironment } = environment
-        return restEnvironment
-      })
-      return {
-        ...restPlant,
-        environments: environmentsData,
-      }
-    })
-    return plantsData
   }
 }
