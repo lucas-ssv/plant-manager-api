@@ -8,7 +8,7 @@ export class DbLoadPlantsByEnvironment implements LoadPlantsByEnvironment {
   ) {}
 
   async perform(
-    environment: string
+    environment?: string
   ): Promise<LoadPlantsByEnvironment.Result[]> {
     return await this.loadPlantsByEnvironment.loadManyByEnvironment(environment)
   }

@@ -1,5 +1,8 @@
 import { type Plant } from '@/domain/entities'
-import { type PlantParams } from '@/domain/usecases'
+import {
+  type LoadPlantsByEnvironment,
+  type PlantParams,
+} from '@/domain/usecases'
 
 import { faker } from '@faker-js/faker'
 
@@ -37,6 +40,31 @@ export const mockPlantModel = (environment = faker.word.words()): Plant => ({
     lastDateWatering: new Date(),
   },
 })
+
+export const mockPlantsByEnvironment = (
+  environment = faker.word.words()
+): LoadPlantsByEnvironment.Result[] => [
+  {
+    id: faker.string.uuid(),
+    title: environment,
+    plant: [
+      {
+        id: faker.string.uuid(),
+        name: faker.word.words(),
+        description: faker.word.words(),
+        waterTips: faker.word.words(),
+        photo: faker.internet.url(),
+        plantWaterFrequency: {
+          id: faker.string.uuid(),
+          description: faker.word.words(),
+          time: faker.number.int(1),
+          gap: faker.number.int(),
+          lastDateWatering: new Date(),
+        },
+      },
+    ],
+  },
+]
 
 export const mockPlantModels = (): Plant[] => {
   return [mockPlantModel(), mockPlantModel()]

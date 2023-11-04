@@ -2,7 +2,7 @@ import { type LoadPlantsByEnvironment } from '@/domain/usecases'
 
 export interface LoadPlantsByEnvironmentRepository {
   loadManyByEnvironment: (
-    environment: string
+    environment?: string
   ) => Promise<LoadPlantsByEnvironmentRepository.Result[]>
 }
 

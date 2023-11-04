@@ -15,7 +15,7 @@ export class SQLiteEnvironmentRepository
   }
 
   async loadManyByEnvironment(
-    environment: string
+    environment?: string
   ): Promise<LoadPlantsByEnvironmentRepository.Result[]> {
     const plantsByEnvironment = await prisma.environment.findMany({
       where: {

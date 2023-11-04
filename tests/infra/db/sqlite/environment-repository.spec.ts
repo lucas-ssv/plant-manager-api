@@ -66,5 +66,31 @@ describe('SQLiteEnvironmentRepository', () => {
       expect(plants.length).toBe(1)
       expect(plants[0].title).toBe(fakeEnvironment)
     })
+
+    it('should load all plants even no environment', async () => {
+      const sut = new SQLiteEnvironmentRepository()
+
+      const plant = await prisma.plant.create({
+        data: {
+          name: faker.lorem.word(),
+          description: faker.lorem.words(),
+        },
+      })
+      await prisma.plant.create({
+        data: {
+          name: faker.lorem.word(),
+          description: faker.lorem.words(),
+        },
+      })
+      await prisma.environment.create({
+        data: {
+          title: faker.word.words(),
+          plantId: plant.id,
+        },
+      })
+      const plants = await sut.loadManyByEnvironment()
+
+      expect(plants.length).toBe(1)
+    })
   })
 })
