@@ -1,10 +1,9 @@
-import { type Plant } from '@/domain/entities'
 import {
-  type LoadPlants,
+  type LoadPlantsByEnvironment,
   type AddPlant,
   type PlantParams,
 } from '@/domain/usecases'
-import { mockPlantModels } from '@/tests/domain/mocks'
+import { mockPlantsByEnvironment } from '@/tests/domain/mocks'
 
 export class AddPlantSpy implements AddPlant {
   input?: PlantParams
@@ -16,12 +15,14 @@ export class AddPlantSpy implements AddPlant {
   }
 }
 
-export class LoadPlantsSpy implements LoadPlants {
-  callsCount = 0
-  output = mockPlantModels()
+export class LoadPlantsByEnvironmentSpy implements LoadPlantsByEnvironment {
+  input?: string
+  output = mockPlantsByEnvironment()
 
-  async perform(): Promise<Plant[]> {
-    this.callsCount++
+  async perform(
+    environment?: string
+  ): Promise<LoadPlantsByEnvironment.Result[]> {
+    this.input = environment
     return this.output
   }
 }

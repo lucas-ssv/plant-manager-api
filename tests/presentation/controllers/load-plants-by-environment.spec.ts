@@ -1,48 +1,25 @@
-import { type LoadPlantsByEnvironment } from '@/domain/usecases'
-import {
-  type Controller,
-  type HttpRequest,
-  type HttpResponse,
-} from '@/presentation/contracts'
 import { ok, serverError } from '@/presentation/helpers'
-import { mockPlantsByEnvironment } from '@/tests/domain/mocks'
+import { LoadPlantsByEnvironmentSpy } from '@/tests/presentation/mocks'
+import { LoadPlantsByEnvironmentController } from '@/presentation/controllers'
 import { faker } from '@faker-js/faker'
 
-class LoadPlantsByEnvironmentController implements Controller {
-  constructor(
-    private readonly loadPlantsByEnvironment: LoadPlantsByEnvironment
-  ) {}
-
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    try {
-      const plants = await this.loadPlantsByEnvironment.perform(
-        httpRequest.query?.q
-      )
-      return ok(plants)
-    } catch (error) {
-      return serverError(error)
-    }
-  }
+interface SutOutput {
+  sut: LoadPlantsByEnvironmentController
+  loadPlantsByEnvironmentSpy: LoadPlantsByEnvironmentSpy
 }
 
-class LoadPlantsByEnvironmentMock implements LoadPlantsByEnvironment {
-  input?: string
-  output = mockPlantsByEnvironment()
-
-  async perform(
-    environment?: string
-  ): Promise<LoadPlantsByEnvironment.Result[]> {
-    this.input = environment
-    return this.output
+const makeSut = (): SutOutput => {
+  const loadPlantsByEnvironmentSpy = new LoadPlantsByEnvironmentSpy()
+  const sut = new LoadPlantsByEnvironmentController(loadPlantsByEnvironmentSpy)
+  return {
+    sut,
+    loadPlantsByEnvironmentSpy,
   }
 }
 
 describe('LoadPlantsByEnvironmentController', () => {
   it('should call LoadPlantsByEnvironment with correct data', async () => {
-    const loadPlantsByEnvironmentMock = new LoadPlantsByEnvironmentMock()
-    const sut = new LoadPlantsByEnvironmentController(
-      loadPlantsByEnvironmentMock
-    )
+    const { sut, loadPlantsByEnvironmentSpy } = makeSut()
     const fakeEnvironment = faker.lorem.word()
 
     await sut.handle({
@@ -51,14 +28,11 @@ describe('LoadPlantsByEnvironmentController', () => {
       },
     })
 
-    expect(loadPlantsByEnvironmentMock.input).toBe(fakeEnvironment)
+    expect(loadPlantsByEnvironmentSpy.input).toBe(fakeEnvironment)
   })
 
   it('should return 200 if LoadPlantsByEnvironment returns a list of plants', async () => {
-    const loadPlantsByEnvironmentMock = new LoadPlantsByEnvironmentMock()
-    const sut = new LoadPlantsByEnvironmentController(
-      loadPlantsByEnvironmentMock
-    )
+    const { sut, loadPlantsByEnvironmentSpy } = makeSut()
 
     const httpResponse = await sut.handle({
       query: {
@@ -66,19 +40,16 @@ describe('LoadPlantsByEnvironmentController', () => {
       },
     })
 
-    expect(httpResponse).toEqual(ok(loadPlantsByEnvironmentMock.output))
+    expect(httpResponse).toEqual(ok(loadPlantsByEnvironmentSpy.output))
   })
 
   it('should return 500 if LoadPlantsByEnvironment throws', async () => {
-    const loadPlantsByEnvironmentMock = new LoadPlantsByEnvironmentMock()
+    const { sut, loadPlantsByEnvironmentSpy } = makeSut()
     jest
-      .spyOn(loadPlantsByEnvironmentMock, 'perform')
+      .spyOn(loadPlantsByEnvironmentSpy, 'perform')
       .mockImplementationOnce(() => {
         throw new Error()
       })
-    const sut = new LoadPlantsByEnvironmentController(
-      loadPlantsByEnvironmentMock
-    )
 
     const httpResponse = await sut.handle({})
 
