@@ -5,6 +5,5 @@ export interface AddEnvironmentRepository {
 export namespace AddEnvironmentRepository {
   export interface Params {
     title: string
-    plantId: string
   }
 }

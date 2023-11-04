@@ -40,7 +40,6 @@ describe('DbAddEnvironment UseCase', () => {
 
     const promise = sut.perform({
       title: faker.lorem.words(),
-      plantId: faker.string.uuid(),
     })
 
     await expect(promise).rejects.toThrowError()

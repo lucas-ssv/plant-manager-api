@@ -137,7 +137,6 @@ describe('DbAddPlant UseCase', () => {
 
     expect(addEnvironmentRepositorySpy.input).toEqual({
       title: input.environments[1],
-      plantId,
     })
     expect(addEnvironmentRepositorySpy.callsCount).toBe(2)
   })

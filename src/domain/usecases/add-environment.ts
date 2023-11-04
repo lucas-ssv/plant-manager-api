@@ -4,5 +4,4 @@ export interface AddEnvironment {
 
 export interface AddEnvironmentParams {
   title: string
-  plantId: string
 }
