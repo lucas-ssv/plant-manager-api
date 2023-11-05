@@ -7,7 +7,7 @@ class DbLoadPlantsEnvironment implements LoadPlantsEnvironment {
   ) {}
 
   async perform(environment?: string): Promise<LoadPlantsEnvironment.Result[]> {
-    return await this.loadPlantsEnvironmentRepository.loadMany()
+    return await this.loadPlantsEnvironmentRepository.loadMany(environment)
   }
 }
 
@@ -49,25 +49,29 @@ const plantsEnvironmentModel = (): LoadPlantsEnvironment.Result[] => [
 class LoadPlantsEnvironmentRepositorySpy
   implements LoadPlantsEnvironmentRepository
 {
+  input?: string
   callsCount = 0
   output = plantsEnvironmentModel()
 
   async loadMany(
     environment?: string
   ): Promise<LoadPlantsEnvironmentRepository.Result[]> {
+    this.input = environment
     this.callsCount++
     return this.output
   }
 }
 
 describe('DbLoadPlantsEnvironment', () => {
-  it('should call LoadPlantsEnvironmentRepository', async () => {
+  it('should call LoadPlantsEnvironmentRepository with correct environment', async () => {
     const loadPlantsEnvironmentRepositorySpy =
       new LoadPlantsEnvironmentRepositorySpy()
     const sut = new DbLoadPlantsEnvironment(loadPlantsEnvironmentRepositorySpy)
+    const environment = faker.lorem.word()
 
-    await sut.perform()
+    await sut.perform(environment)
 
+    expect(loadPlantsEnvironmentRepositorySpy.input).toBe(environment)
     expect(loadPlantsEnvironmentRepositorySpy.callsCount).toBe(1)
   })
 
