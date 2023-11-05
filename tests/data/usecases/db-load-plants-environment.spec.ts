@@ -86,4 +86,19 @@ describe('DbLoadPlantsEnvironment', () => {
       loadPlantsEnvironmentRepositorySpy.output
     )
   })
+
+  it('should throw if LoadPlantsEnvironmentRepository throws', async () => {
+    const loadPlantsEnvironmentRepositorySpy =
+      new LoadPlantsEnvironmentRepositorySpy()
+    jest
+      .spyOn(loadPlantsEnvironmentRepositorySpy, 'loadMany')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+    const sut = new DbLoadPlantsEnvironment(loadPlantsEnvironmentRepositorySpy)
+
+    const promise = sut.perform()
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
