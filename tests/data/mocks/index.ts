@@ -1,6 +1,6 @@
 export * from './mock-db-add-plant'
 export * from './mock-db-load-environments'
-export * from './mock-db-load-plants-repository'
 export * from './mock-db-add-plant-water-frequency'
 export * from './mock-db-add-environment'
 export * from './mock-find-plant-by-name-repository'
+export * from './mock-db-load-plants-environment'
