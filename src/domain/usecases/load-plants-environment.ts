@@ -1,7 +1,7 @@
 import { type Environment, type Plant } from '@/domain/entities'
 
 export interface LoadPlantsEnvironment {
-  loadMany: (environment?: string) => Promise<LoadPlantsEnvironment.Result>
+  perform: (environment?: string) => Promise<LoadPlantsEnvironment.Result>
 }
 
 export namespace LoadPlantsEnvironment {
