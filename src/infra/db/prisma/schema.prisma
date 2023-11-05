@@ -21,17 +21,16 @@ model Plant {
   updatedAt DateTime @updatedAt
 
   plantWaterFrequency PlantWaterFrequency? @relation(fields: [plantWaterFrequencyId], references: [id])
-  environments Environment[]
+  environments PlantEnvironment[]
 }
 
 model Environment {
   id String @id @default(uuid())
   title String
-  plantId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  plant Plant @relation(fields: [plantId], references: [id])
+  plants PlantEnvironment[]
 }
 
 model PlantWaterFrequency {
@@ -44,4 +43,14 @@ model PlantWaterFrequency {
   updatedAt DateTime @updatedAt
 
   plant Plant?
+}
+
+model PlantEnvironment {
+  plantId String
+  environmentId String
+
+  plant Plant @relation(fields: [plantId], references: [id])
+  environment Environment @relation(fields: [environmentId], references: [id])
+
+  @@id([plantId, environmentId])
 }

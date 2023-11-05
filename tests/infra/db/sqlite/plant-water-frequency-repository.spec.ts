@@ -5,8 +5,10 @@ import { faker } from '@faker-js/faker'
 
 describe('SQLitePlantWaterFrequencyRepository', () => {
   beforeEach(async () => {
-    await prisma.plant.deleteMany()
+    await prisma.plantEnvironment.deleteMany()
+    await prisma.environment.deleteMany()
     await prisma.plantWaterFrequency.deleteMany()
+    await prisma.plant.deleteMany()
   })
 
   afterAll(async () => {

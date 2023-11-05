@@ -1,5 +1,5 @@
 export interface AddEnvironmentRepository {
-  add: (input: AddEnvironmentRepository.Params) => Promise<void>
+  add: (input: AddEnvironmentRepository.Params) => Promise<string>
 }
 
 export namespace AddEnvironmentRepository {

@@ -1,7 +1,9 @@
 import { DbAddPlant } from '@/data/usecases'
+import { ValidateUuidAdapter } from '@/infra'
 
 import {
   SQLiteEnvironmentRepository,
+  SQLitePlantEnvironmentRepository,
   SQLitePlantRepository,
   SQLitePlantWaterFrequencyRepository,
 } from '@/infra/db/sqlite'
@@ -14,11 +16,15 @@ export const makeAddPlantController = (): Controller => {
   const plantRepository = new SQLitePlantRepository()
   const plantWaterFrequencyRepository =
     new SQLitePlantWaterFrequencyRepository()
+  const validateUuidAdapter = new ValidateUuidAdapter()
+  const plantEnvironmentRepository = new SQLitePlantEnvironmentRepository()
   const addPlant = new DbAddPlant(
     plantRepository,
     plantWaterFrequencyRepository,
     plantRepository,
-    environmentRepository
+    validateUuidAdapter,
+    environmentRepository,
+    plantEnvironmentRepository
   )
   return new AddPlantController(addPlant)
 }

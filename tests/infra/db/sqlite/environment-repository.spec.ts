@@ -5,7 +5,9 @@ import { faker } from '@faker-js/faker'
 
 describe('SQLiteEnvironmentRepository', () => {
   beforeEach(async () => {
+    await prisma.plantEnvironment.deleteMany()
     await prisma.environment.deleteMany()
+    await prisma.plantWaterFrequency.deleteMany()
     await prisma.plant.deleteMany()
   })
 
@@ -18,15 +20,8 @@ describe('SQLiteEnvironmentRepository', () => {
       const sut = new SQLiteEnvironmentRepository()
       const title = faker.lorem.words()
 
-      const plant = await prisma.plant.create({
-        data: {
-          name: faker.lorem.word(),
-          description: faker.lorem.words(),
-        },
-      })
       await sut.add({
         title,
-        plantId: plant.id,
       })
       const environment = await prisma.environment.findFirst({
         where: {
