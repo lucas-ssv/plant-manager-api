@@ -19,6 +19,9 @@ export class SQLitePlantEnvironmentRepository
   async loadMany(
     environment?: string
   ): Promise<LoadPlantsEnvironmentRepository.Result[]> {
+    const environmentsId = await prisma.plantEnvironment.groupBy({
+      by: ['environmentId'],
+    })
     const plantsEnvironment = await prisma.plantEnvironment.findMany({
       where: {
         environment: {
@@ -34,17 +37,28 @@ export class SQLitePlantEnvironmentRepository
         environment: true,
       },
     })
-    const environmentData = plantsEnvironment[0].environment
-    const plants = plantsEnvironment.map((item) => {
-      const { plant } = item
-      const { plantWaterFrequencyId, ...restPlant } = plant
-      return { ...restPlant }
+    const plants: LoadPlantsEnvironmentRepository.Result[] = []
+    environmentsId.forEach((item) => {
+      const items = plantsEnvironment.filter(
+        (p) => p.environmentId === item.environmentId
+      )
+      if (items.length === 0) return
+      if (items.length > 1) {
+        const plantsResult: any = []
+        items.forEach((item) => {
+          const { plant } = item
+          const { plantWaterFrequencyId, ...restPlant } = plant
+          plantsResult.push(restPlant)
+        })
+        plants.push({ plants: plantsResult, environment: items[0].environment })
+      } else {
+        items.forEach((i) => {
+          const { plant, environment } = i
+          const { plantWaterFrequencyId, ...restPlant } = plant
+          plants.push({ plants: [restPlant], environment })
+        })
+      }
     })
-    return [
-      {
-        environment: environmentData,
-        plants,
-      },
-    ]
+    return plants
   }
 }
