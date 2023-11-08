@@ -4,7 +4,7 @@ import {
   type HttpResponse,
   type Controller,
 } from '@/presentation/contracts'
-import { ok } from '@/presentation/helpers'
+import { ok, serverError } from '@/presentation/helpers'
 import { plantsEnvironmentModel } from '@/tests/domain/mocks'
 import { faker } from '@faker-js/faker'
 
@@ -12,10 +12,14 @@ class LoadPlantsEnvironmentController implements Controller {
   constructor(private readonly loadPlantsEnvironment: LoadPlantsEnvironment) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const plantsEnvironment = await this.loadPlantsEnvironment.perform(
-      httpRequest.query?.q
-    )
-    return ok(plantsEnvironment)
+    try {
+      const plantsEnvironment = await this.loadPlantsEnvironment.perform(
+        httpRequest.query?.q
+      )
+      return ok(plantsEnvironment)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }
 
@@ -40,6 +44,20 @@ describe('LoadPlantsEnvironmentController', () => {
     await sut.handle(httpRequest)
 
     expect(loadPlantsEnvironmentMock.input).toBe(httpRequest.query.q)
+  })
+
+  it('should return 500 if LoadPlantsEnvironment throws', async () => {
+    const loadPlantsEnvironmentMock = new LoadPlantsEnvironmentMock()
+    jest
+      .spyOn(loadPlantsEnvironmentMock, 'perform')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+    const sut = new LoadPlantsEnvironmentController(loadPlantsEnvironmentMock)
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 
   it('should return 200 if LoadPlantsEnvironment returns a list of plants environment', async () => {
