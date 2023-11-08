@@ -38,9 +38,8 @@ describe('PlantEnvironmentRepository', () => {
     expect(plantEnvironmentCount).toBe(1)
   })
 
-  it('should load all with environment provided', async () => {
+  it('should load all plants', async () => {
     const sut = new SQLitePlantEnvironmentRepository()
-    const environmentTitle = faker.lorem.words()
 
     const plantWaterFrequency = await prisma.plantWaterFrequency.create({
       data: {
@@ -56,9 +55,23 @@ describe('PlantEnvironmentRepository', () => {
         plantWaterFrequencyId: plantWaterFrequency.id,
       },
     })
+    const plantWaterFrequency2 = await prisma.plantWaterFrequency.create({
+      data: {
+        description: faker.word.words(),
+        gap: faker.number.int(1),
+        time: faker.number.int(1),
+      },
+    })
+    const plant2 = await prisma.plant.create({
+      data: {
+        name: faker.word.noun(),
+        description: faker.word.words(),
+        plantWaterFrequencyId: plantWaterFrequency2.id,
+      },
+    })
     const environment = await prisma.environment.create({
       data: {
-        title: environmentTitle,
+        title: faker.word.words(),
       },
     })
     const environment2 = await prisma.environment.create({
@@ -72,20 +85,20 @@ describe('PlantEnvironmentRepository', () => {
         environmentId: environment.id,
       },
     })
-    const plant2 = await prisma.plant.create({
+    await prisma.plantEnvironment.create({
       data: {
-        name: faker.lorem.word(),
-        description: faker.word.words(),
+        plantId: plant2.id,
+        environmentId: environment.id,
       },
     })
     await prisma.plantEnvironment.create({
       data: {
-        plantId: plant2.id,
+        plantId: plant.id,
         environmentId: environment2.id,
       },
     })
-    const result = await sut.loadMany(environmentTitle)
+    const result = await sut.loadMany()
 
-    expect(result[0].plants.length).toBe(1)
+    expect(result.length).toBe(2)
   })
 })
