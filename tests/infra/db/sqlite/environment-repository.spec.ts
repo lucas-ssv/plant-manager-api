@@ -32,4 +32,20 @@ describe('SQLiteEnvironmentRepository', () => {
       expect(environment?.title).toBe(title)
     })
   })
+
+  describe('loadMany()', () => {
+    it('should load all environments', async () => {
+      const sut = new SQLiteEnvironmentRepository()
+      const title = faker.word.words()
+
+      await prisma.environment.create({
+        data: {
+          title,
+        },
+      })
+      const environments = await sut.loadMany()
+
+      expect(environments.length).toBe(1)
+    })
+  })
 })
