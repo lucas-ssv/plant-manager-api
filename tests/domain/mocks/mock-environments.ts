@@ -5,6 +5,10 @@ import { faker } from '@faker-js/faker'
 export const mockEnvironmentsModel = (): Environment[] => [
   {
     id: faker.string.uuid(),
-    title: faker.lorem.words(),
+    title: faker.word.words(),
+  },
+  {
+    id: faker.string.uuid(),
+    title: faker.word.words(),
   },
 ]
