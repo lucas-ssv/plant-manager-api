@@ -5,15 +5,19 @@ import {
   type HttpRequest,
   type HttpResponse,
 } from '@/presentation/contracts'
-import { ok } from '@/presentation/helpers'
+import { ok, serverError } from '@/presentation/helpers'
 import { faker } from '@faker-js/faker'
 
 class LoadEnvironmentsController implements Controller {
   constructor(private readonly loadEnvironments: LoadEnvironments) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const environments = await this.loadEnvironments.perform()
-    return ok(environments)
+    try {
+      const environments = await this.loadEnvironments.perform()
+      return ok(environments)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }
 
@@ -55,5 +59,17 @@ describe('LoadEnvironmentsController', () => {
     const httpResponse = await sut.handle({})
 
     expect(httpResponse).toEqual(ok(loadEnvironmentsMock.output))
+  })
+
+  it('should return 500 if LoadEnvironments throws', async () => {
+    const loadEnvironmentsMock = new LoadEnvironmentsMock()
+    jest.spyOn(loadEnvironmentsMock, 'perform').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const sut = new LoadEnvironmentsController(loadEnvironmentsMock)
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
