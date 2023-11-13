@@ -179,4 +179,17 @@ describe('DbAddPlant UseCase', () => {
       environmentId: addEnvironmentRepositorySpy.output,
     })
   })
+
+  it('should throw if AddPlantEnvironmentRepository throws', async () => {
+    const { sut, addPlantEnvironmentRepositoryMock } = makeSut()
+    jest
+      .spyOn(addPlantEnvironmentRepositoryMock, 'add')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.perform(mockAddPlantParams())
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
