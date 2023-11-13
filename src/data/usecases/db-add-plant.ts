@@ -16,7 +16,8 @@ export class DbAddPlant implements AddPlant {
     private readonly addPlantRepository: AddPlantRepository,
     private readonly validateUuid: ValidateUuid,
     private readonly addEnvironmentRepository: AddEnvironmentRepository,
-    private readonly addPlantEnvironmentRepository: AddPlantEnvironmentRepository
+    private readonly addPlantEnvironmentRepository: AddPlantEnvironmentRepository,
+    private readonly findEnvironmentById: any
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
@@ -43,6 +44,7 @@ export class DbAddPlant implements AddPlant {
             environmentId,
           })
         } else {
+          await this.findEnvironmentById.perform(environment)
           await this.addPlantEnvironmentRepository.add({
             plantId,
             environmentId: environment,

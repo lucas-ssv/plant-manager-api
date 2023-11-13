@@ -11,6 +11,7 @@ import {
 } from '@/tests/data/mocks'
 
 import { faker } from '@faker-js/faker'
+import { type Environment } from '@/domain/entities'
 
 interface SutTypes {
   sut: DbAddPlant
@@ -20,6 +21,19 @@ interface SutTypes {
   validateUuidSpy: ValidateUuidSpy
   addEnvironmentRepositorySpy: AddEnvironmentRepositorySpy
   addPlantEnvironmentRepositoryMock: AddPlantEnvironmentRepositoryMock
+  findEnvironmentByIdMock: FindEnvironmentByIdMock
+}
+
+interface FindEnvironmentById {
+  perform: (id: string) => Promise<Environment>
+}
+
+class FindEnvironmentByIdMock implements FindEnvironmentById {
+  input?: string
+
+  async perform(id: string): Promise<Environment> {
+    this.input = id
+  }
 }
 
 const makeSut = (): SutTypes => {
@@ -31,13 +45,15 @@ const makeSut = (): SutTypes => {
   const addEnvironmentRepositorySpy = new AddEnvironmentRepositorySpy()
   const addPlantEnvironmentRepositoryMock =
     new AddPlantEnvironmentRepositoryMock()
+  const findEnvironmentByIdMock = new FindEnvironmentByIdMock()
   const sut = new DbAddPlant(
     findPlantByNameRepositorySpy,
     addPlantWaterFrequencyRepositorySpy,
     addPlantRepositorySpy,
     validateUuidSpy,
     addEnvironmentRepositorySpy,
-    addPlantEnvironmentRepositoryMock
+    addPlantEnvironmentRepositoryMock,
+    findEnvironmentByIdMock
   )
   return {
     sut,
@@ -47,6 +63,7 @@ const makeSut = (): SutTypes => {
     validateUuidSpy,
     addEnvironmentRepositorySpy,
     addPlantEnvironmentRepositoryMock,
+    findEnvironmentByIdMock,
   }
 }
 
@@ -191,5 +208,27 @@ describe('DbAddPlant UseCase', () => {
     const promise = sut.perform(mockAddPlantParams())
 
     await expect(promise).rejects.toThrowError()
+  })
+
+  it('should call FindEnvironmentById with correct data', async () => {
+    const { sut, findEnvironmentByIdMock, validateUuidSpy } = makeSut()
+    validateUuidSpy.output = true
+    const environmentId = faker.string.uuid()
+
+    await sut.perform({
+      name: faker.word.words(),
+      description: faker.lorem.words(),
+      photo: faker.internet.url(),
+      waterTips: faker.word.words(),
+      plantWaterFrequency: {
+        description: faker.word.words(),
+        gap: faker.number.int(1),
+        time: faker.number.int(1),
+        lastDateWatering: new Date(),
+      },
+      environments: [environmentId],
+    })
+
+    expect(findEnvironmentByIdMock.input).toBe(environmentId)
   })
 })
