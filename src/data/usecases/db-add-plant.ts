@@ -45,7 +45,7 @@ export class DbAddPlant implements AddPlant {
             environmentId,
           })
         } else {
-          const exists = await this.findEnvironmentById.perform(environment)
+          const exists = await this.findEnvironmentById.findById(environment)
           if (exists.id !== '') {
             await this.addPlantEnvironmentRepository.add({
               plantId,

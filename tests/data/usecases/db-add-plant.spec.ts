@@ -1,8 +1,4 @@
-import {
-  mockAddPlantParams,
-  mockEnvironment,
-  mockPlantModel,
-} from '@/tests/domain/mocks'
+import { mockAddPlantParams, mockPlantModel } from '@/tests/domain/mocks'
 
 import { DbAddPlant } from '@/data/usecases'
 import {
@@ -10,12 +6,12 @@ import {
   AddPlantEnvironmentRepositoryMock,
   AddPlantRepositorySpy,
   AddPlantWaterFrequencyRepositorySpy,
+  FindEnvironmentByIdSpy,
   FindPlantByNameRepositorySpy,
   ValidateUuidSpy,
 } from '@/tests/data/mocks'
 
 import { faker } from '@faker-js/faker'
-import { type FindEnvironmentByIdRepository } from '@/data/contracts'
 
 interface SutTypes {
   sut: DbAddPlant
@@ -26,16 +22,6 @@ interface SutTypes {
   addEnvironmentRepositorySpy: AddEnvironmentRepositorySpy
   addPlantEnvironmentRepositoryMock: AddPlantEnvironmentRepositoryMock
   findEnvironmentByIdSpy: FindEnvironmentByIdSpy
-}
-
-class FindEnvironmentByIdSpy implements FindEnvironmentByIdRepository {
-  input?: string
-  output = mockEnvironment()
-
-  async perform(id: string): Promise<FindEnvironmentByIdRepository.Result> {
-    this.input = id
-    return this.output
-  }
 }
 
 const makeSut = (): SutTypes => {
@@ -237,9 +223,11 @@ describe('DbAddPlant UseCase', () => {
   it('should throw if FindEnvironmentById throws', async () => {
     const { sut, findEnvironmentByIdSpy, validateUuidSpy } = makeSut()
     validateUuidSpy.output = true
-    jest.spyOn(findEnvironmentByIdSpy, 'perform').mockImplementationOnce(() => {
-      throw new Error()
-    })
+    jest
+      .spyOn(findEnvironmentByIdSpy, 'findById')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
 
     const promise = sut.perform({
       name: faker.word.words(),
