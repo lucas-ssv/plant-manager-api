@@ -7,6 +7,7 @@ import {
   type AddEnvironmentRepository,
   type AddPlantEnvironmentRepository,
   type ValidateUuid,
+  type FindEnvironmentByIdRepository,
 } from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
@@ -17,7 +18,7 @@ export class DbAddPlant implements AddPlant {
     private readonly validateUuid: ValidateUuid,
     private readonly addEnvironmentRepository: AddEnvironmentRepository,
     private readonly addPlantEnvironmentRepository: AddPlantEnvironmentRepository,
-    private readonly findEnvironmentById: any
+    private readonly findEnvironmentById: FindEnvironmentByIdRepository
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
@@ -44,11 +45,13 @@ export class DbAddPlant implements AddPlant {
             environmentId,
           })
         } else {
-          await this.findEnvironmentById.perform(environment)
-          await this.addPlantEnvironmentRepository.add({
-            plantId,
-            environmentId: environment,
-          })
+          const exists = await this.findEnvironmentById.perform(environment)
+          if (exists.id !== '') {
+            await this.addPlantEnvironmentRepository.add({
+              plantId,
+              environmentId: environment,
+            })
+          }
         }
       }
       isValid = true
