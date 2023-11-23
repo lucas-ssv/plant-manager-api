@@ -24,7 +24,8 @@ export const makeAddPlantController = (): Controller => {
     plantRepository,
     validateUuidAdapter,
     environmentRepository,
-    plantEnvironmentRepository
+    plantEnvironmentRepository,
+    environmentRepository
   )
   return new AddPlantController(addPlant)
 }
