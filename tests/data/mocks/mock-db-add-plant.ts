@@ -1,7 +1,7 @@
 import { type AddPlantRepository } from '@/data/contracts'
 import { faker } from '@faker-js/faker'
 
-export class AddPlantRepositoryMock implements AddPlantRepository {
+export class AddPlantRepositorySpy implements AddPlantRepository {
   input?: AddPlantRepository.AddParams
   output = faker.string.uuid()
 
