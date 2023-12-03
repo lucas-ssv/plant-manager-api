@@ -34,6 +34,7 @@ export class DbAddPlant implements AddPlant {
         ...restPlant,
         plantWaterFrequencyId,
       })
+      isValid = true
       for (const environment of environments) {
         const isUuid = this.validateUuid.validate(environment)
         if (!isUuid) {
@@ -44,17 +45,20 @@ export class DbAddPlant implements AddPlant {
             plantId,
             environmentId,
           })
+          isValid = true
         } else {
           const exists = await this.findEnvironmentById.findById(environment)
-          if (exists?.id !== '') {
+          if (exists !== null) {
             await this.addPlantEnvironmentRepository.add({
               plantId,
               environmentId: environment,
             })
+            isValid = true
+          } else {
+            isValid = false
           }
         }
       }
-      isValid = true
     }
     return isValid
   }
