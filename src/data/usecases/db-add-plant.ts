@@ -8,6 +8,7 @@ import {
   type AddPlantEnvironmentRepository,
   type ValidateUuid,
   type FindEnvironmentByIdRepository,
+  type FindEnvironmentByNameRepository,
 } from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
@@ -18,7 +19,8 @@ export class DbAddPlant implements AddPlant {
     private readonly validateUuid: ValidateUuid,
     private readonly addEnvironmentRepository: AddEnvironmentRepository,
     private readonly addPlantEnvironmentRepository: AddPlantEnvironmentRepository,
-    private readonly findEnvironmentById: FindEnvironmentByIdRepository
+    private readonly findEnvironmentById: FindEnvironmentByIdRepository,
+    private readonly findEnvironmentByName: FindEnvironmentByNameRepository
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
@@ -38,6 +40,7 @@ export class DbAddPlant implements AddPlant {
       for (const environment of environments) {
         const isUuid = this.validateUuid.validate(environment)
         if (!isUuid) {
+          await this.findEnvironmentByName.findByName(environment)
           const environmentId = await this.addEnvironmentRepository.add({
             title: environment,
           })
