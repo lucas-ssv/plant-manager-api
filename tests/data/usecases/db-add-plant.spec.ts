@@ -1,13 +1,13 @@
 import { mockAddPlantParams, mockPlantModel } from '@/tests/domain/mocks'
 
 import { DbAddPlant } from '@/data/usecases'
-import { type FindEnvironmentByNameRepository } from '@/data/contracts'
 import {
   AddEnvironmentRepositorySpy,
   AddPlantEnvironmentRepositoryMock,
   AddPlantRepositorySpy,
   AddPlantWaterFrequencyRepositorySpy,
-  FindEnvironmentByIdSpy,
+  FindEnvironmentByIdRepositorySpy,
+  FindEnvironmentByNameRepositorySpy,
   FindPlantByNameRepositorySpy,
   ValidateUuidSpy,
 } from '@/tests/data/mocks'
@@ -22,22 +22,8 @@ interface SutTypes {
   validateUuidSpy: ValidateUuidSpy
   addEnvironmentRepositorySpy: AddEnvironmentRepositorySpy
   addPlantEnvironmentRepositoryMock: AddPlantEnvironmentRepositoryMock
-  findEnvironmentByIdSpy: FindEnvironmentByIdSpy
+  findEnvironmentByIdRepositorySpy: FindEnvironmentByIdRepositorySpy
   findEnvironmentByNameRepositorySpy: FindEnvironmentByNameRepositorySpy
-}
-
-class FindEnvironmentByNameRepositorySpy
-  implements FindEnvironmentByNameRepository
-{
-  input?: string
-  output = null
-
-  async findByName(
-    name: string
-  ): Promise<FindEnvironmentByNameRepository.Result | null> {
-    this.input = name
-    return this.output
-  }
 }
 
 const makeSut = (): SutTypes => {
@@ -49,7 +35,8 @@ const makeSut = (): SutTypes => {
   const addEnvironmentRepositorySpy = new AddEnvironmentRepositorySpy()
   const addPlantEnvironmentRepositoryMock =
     new AddPlantEnvironmentRepositoryMock()
-  const findEnvironmentByIdSpy = new FindEnvironmentByIdSpy()
+  const findEnvironmentByIdRepositorySpy =
+    new FindEnvironmentByIdRepositorySpy()
   const findEnvironmentByNameRepositorySpy =
     new FindEnvironmentByNameRepositorySpy()
   const sut = new DbAddPlant(
@@ -59,7 +46,7 @@ const makeSut = (): SutTypes => {
     validateUuidSpy,
     addEnvironmentRepositorySpy,
     addPlantEnvironmentRepositoryMock,
-    findEnvironmentByIdSpy,
+    findEnvironmentByIdRepositorySpy,
     findEnvironmentByNameRepositorySpy
   )
   return {
@@ -70,7 +57,7 @@ const makeSut = (): SutTypes => {
     validateUuidSpy,
     addEnvironmentRepositorySpy,
     addPlantEnvironmentRepositoryMock,
-    findEnvironmentByIdSpy,
+    findEnvironmentByIdRepositorySpy,
     findEnvironmentByNameRepositorySpy,
   }
 }
@@ -219,7 +206,7 @@ describe('DbAddPlant UseCase', () => {
   })
 
   it('should call FindEnvironmentById with correct data', async () => {
-    const { sut, findEnvironmentByIdSpy, validateUuidSpy } = makeSut()
+    const { sut, findEnvironmentByIdRepositorySpy, validateUuidSpy } = makeSut()
     validateUuidSpy.output = true
     const environmentId = faker.string.uuid()
 
@@ -237,14 +224,14 @@ describe('DbAddPlant UseCase', () => {
       environments: [environmentId],
     })
 
-    expect(findEnvironmentByIdSpy.input).toBe(environmentId)
+    expect(findEnvironmentByIdRepositorySpy.input).toBe(environmentId)
   })
 
   it('should throw if FindEnvironmentById throws', async () => {
-    const { sut, findEnvironmentByIdSpy, validateUuidSpy } = makeSut()
+    const { sut, findEnvironmentByIdRepositorySpy, validateUuidSpy } = makeSut()
     validateUuidSpy.output = true
     jest
-      .spyOn(findEnvironmentByIdSpy, 'findById')
+      .spyOn(findEnvironmentByIdRepositorySpy, 'findById')
       .mockImplementationOnce(() => {
         throw new Error()
       })
