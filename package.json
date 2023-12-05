@@ -68,6 +68,6 @@
     "zod": "^3.22.2"
   },
   "_moduleAliases": {
-    "@": "src"
+    "@": "dist"
   }
 }
