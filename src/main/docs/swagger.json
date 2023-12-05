@@ -227,7 +227,7 @@
           "400": {
             "description": "Bad Request"
           },
-          "200": {
+          "201": {
             "description": "No Content"
           }
         }
