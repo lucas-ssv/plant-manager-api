@@ -19,8 +19,8 @@ export class DbAddPlant implements AddPlant {
     private readonly validateUuid: ValidateUuid,
     private readonly addEnvironmentRepository: AddEnvironmentRepository,
     private readonly addPlantEnvironmentRepository: AddPlantEnvironmentRepository,
-    private readonly findEnvironmentById: FindEnvironmentByIdRepository,
-    private readonly findEnvironmentByName: FindEnvironmentByNameRepository
+    private readonly findEnvironmentByIdRepository: FindEnvironmentByIdRepository,
+    private readonly findEnvironmentByNameRepository: FindEnvironmentByNameRepository
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
@@ -40,9 +40,8 @@ export class DbAddPlant implements AddPlant {
       for (const environment of environments) {
         const isUuid = this.validateUuid.validate(environment)
         if (!isUuid) {
-          const environmentExists = await this.findEnvironmentByName.findByName(
-            environment
-          )
+          const environmentExists =
+            await this.findEnvironmentByNameRepository.findByName(environment)
           if (environmentExists === null) {
             const environmentId = await this.addEnvironmentRepository.add({
               title: environment,
@@ -59,7 +58,9 @@ export class DbAddPlant implements AddPlant {
           }
           isValid = true
         } else {
-          const exists = await this.findEnvironmentById.findById(environment)
+          const exists = await this.findEnvironmentByIdRepository.findById(
+            environment
+          )
           if (exists !== null) {
             await this.addPlantEnvironmentRepository.add({
               plantId,
