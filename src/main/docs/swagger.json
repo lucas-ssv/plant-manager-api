@@ -113,6 +113,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -149,6 +152,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -224,11 +230,14 @@
           }
         },
         "responses": {
+          "201": {
+            "description": "No Content"
+          },
           "400": {
             "description": "Bad Request"
           },
-          "201": {
-            "description": "No Content"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
