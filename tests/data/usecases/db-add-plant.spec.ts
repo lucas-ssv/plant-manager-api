@@ -1,6 +1,7 @@
 import { mockAddPlantParams, mockPlantModel } from '@/tests/domain/mocks'
 
 import { DbAddPlant } from '@/data/usecases'
+import { type FindEnvironmentByNameRepository } from '@/data/contracts'
 import {
   AddEnvironmentRepositorySpy,
   AddPlantEnvironmentRepositoryMock,
@@ -22,6 +23,19 @@ interface SutTypes {
   addEnvironmentRepositorySpy: AddEnvironmentRepositorySpy
   addPlantEnvironmentRepositoryMock: AddPlantEnvironmentRepositoryMock
   findEnvironmentByIdSpy: FindEnvironmentByIdSpy
+  findEnvironmentByNameRepositoryMock: FindEnvironmentByNameRepositoryMock
+}
+
+class FindEnvironmentByNameRepositoryMock
+  implements FindEnvironmentByNameRepository
+{
+  input?: string
+
+  async findByName(
+    name: string
+  ): Promise<FindEnvironmentByNameRepository.Result | null> {
+    this.input = name
+  }
 }
 
 const makeSut = (): SutTypes => {
@@ -34,6 +48,8 @@ const makeSut = (): SutTypes => {
   const addPlantEnvironmentRepositoryMock =
     new AddPlantEnvironmentRepositoryMock()
   const findEnvironmentByIdSpy = new FindEnvironmentByIdSpy()
+  const findEnvironmentByNameRepositoryMock =
+    new FindEnvironmentByNameRepositoryMock()
   const sut = new DbAddPlant(
     findPlantByNameRepositorySpy,
     addPlantWaterFrequencyRepositorySpy,
@@ -41,7 +57,8 @@ const makeSut = (): SutTypes => {
     validateUuidSpy,
     addEnvironmentRepositorySpy,
     addPlantEnvironmentRepositoryMock,
-    findEnvironmentByIdSpy
+    findEnvironmentByIdSpy,
+    findEnvironmentByNameRepositoryMock
   )
   return {
     sut,
@@ -52,6 +69,7 @@ const makeSut = (): SutTypes => {
     addEnvironmentRepositorySpy,
     addPlantEnvironmentRepositoryMock,
     findEnvironmentByIdSpy,
+    findEnvironmentByNameRepositoryMock,
   }
 }
 
@@ -244,5 +262,26 @@ describe('DbAddPlant UseCase', () => {
     })
 
     await expect(promise).rejects.toThrowError()
+  })
+
+  it('should call FindEnvironmentByNameRepository with correct data', async () => {
+    const { sut, findEnvironmentByNameRepositoryMock } = makeSut()
+    const environmentName = faker.word.words()
+
+    await sut.perform({
+      name: faker.word.words(),
+      description: faker.lorem.words(),
+      photo: faker.internet.url(),
+      waterTips: faker.word.words(),
+      plantWaterFrequency: {
+        description: faker.word.words(),
+        gap: faker.number.int(1),
+        time: faker.number.int(1),
+        lastDateWatering: new Date(),
+      },
+      environments: [environmentName],
+    })
+
+    expect(findEnvironmentByNameRepositoryMock.input).toBe(environmentName)
   })
 })
