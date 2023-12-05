@@ -40,14 +40,23 @@ export class DbAddPlant implements AddPlant {
       for (const environment of environments) {
         const isUuid = this.validateUuid.validate(environment)
         if (!isUuid) {
-          await this.findEnvironmentByName.findByName(environment)
-          const environmentId = await this.addEnvironmentRepository.add({
-            title: environment,
-          })
-          await this.addPlantEnvironmentRepository.add({
-            plantId,
-            environmentId,
-          })
+          const environmentExists = await this.findEnvironmentByName.findByName(
+            environment
+          )
+          if (environmentExists === null) {
+            const environmentId = await this.addEnvironmentRepository.add({
+              title: environment,
+            })
+            await this.addPlantEnvironmentRepository.add({
+              plantId,
+              environmentId,
+            })
+          } else {
+            await this.addPlantEnvironmentRepository.add({
+              plantId,
+              environmentId: environmentExists.id,
+            })
+          }
           isValid = true
         } else {
           const exists = await this.findEnvironmentById.findById(environment)
