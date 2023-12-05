@@ -1,0 +1,237 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Plant Manager API",
+    "description": "Manage your home plants.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/plants": {
+      "get": {
+        "summary": "Returns a list of plants",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the room you are looking for."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of plants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "plants": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "waterTips": {
+                              "type": "string"
+                            },
+                            "photo": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "plantWaterFrequency": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "time": {
+                                  "type": "integer"
+                                },
+                                "gap": {
+                                  "type": "integer"
+                                },
+                                "lastDateWatering": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "environment": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/environments": {
+      "get": {
+        "summary": "Returns a list of environments",
+        "responses": {
+          "200": {
+            "description": "A JSON array of environments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/add-plant": {
+      "post": {
+        "summary": "Adds a new plant",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "waterTips": {
+                    "type": "string"
+                  },
+                  "photo": {
+                    "type": "string"
+                  },
+                  "plantWaterFrequency": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "string"
+                      },
+                      "time": {
+                        "type": "integer"
+                      },
+                      "gap": {
+                        "type": "integer"
+                      },
+                      "lastDateWatering": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "environments": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "name": "Girassol",
+                  "description": "O girassol é uma planta anual da família das Asteraceae, gênero Heliantheae.",
+                  "waterTips": "Terra úmida sem encharcar é essencial",
+                  "photo": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "plantWaterFrequency": {
+                    "description": "A cada 3 dias",
+                    "time": 10,
+                    "gap": 72,
+                    "lastDateWatering": "2023-12-01T10:30:00Z"
+                  },
+                  "environments": ["Sala de Estar", "Dormitório 1"]
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "plantWaterFrequency",
+                  "environments"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "No Content"
+          }
+        }
+      }
+    }
+  }
+}
