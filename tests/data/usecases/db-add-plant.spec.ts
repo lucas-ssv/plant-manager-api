@@ -6,7 +6,8 @@ import {
   AddPlantEnvironmentRepositoryMock,
   AddPlantRepositorySpy,
   AddPlantWaterFrequencyRepositorySpy,
-  FindEnvironmentByIdSpy,
+  FindEnvironmentByIdRepositorySpy,
+  FindEnvironmentByNameRepositorySpy,
   FindPlantByNameRepositorySpy,
   ValidateUuidSpy,
 } from '@/tests/data/mocks'
@@ -21,7 +22,8 @@ interface SutTypes {
   validateUuidSpy: ValidateUuidSpy
   addEnvironmentRepositorySpy: AddEnvironmentRepositorySpy
   addPlantEnvironmentRepositoryMock: AddPlantEnvironmentRepositoryMock
-  findEnvironmentByIdSpy: FindEnvironmentByIdSpy
+  findEnvironmentByIdRepositorySpy: FindEnvironmentByIdRepositorySpy
+  findEnvironmentByNameRepositorySpy: FindEnvironmentByNameRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
@@ -33,7 +35,10 @@ const makeSut = (): SutTypes => {
   const addEnvironmentRepositorySpy = new AddEnvironmentRepositorySpy()
   const addPlantEnvironmentRepositoryMock =
     new AddPlantEnvironmentRepositoryMock()
-  const findEnvironmentByIdSpy = new FindEnvironmentByIdSpy()
+  const findEnvironmentByIdRepositorySpy =
+    new FindEnvironmentByIdRepositorySpy()
+  const findEnvironmentByNameRepositorySpy =
+    new FindEnvironmentByNameRepositorySpy()
   const sut = new DbAddPlant(
     findPlantByNameRepositorySpy,
     addPlantWaterFrequencyRepositorySpy,
@@ -41,7 +46,8 @@ const makeSut = (): SutTypes => {
     validateUuidSpy,
     addEnvironmentRepositorySpy,
     addPlantEnvironmentRepositoryMock,
-    findEnvironmentByIdSpy
+    findEnvironmentByIdRepositorySpy,
+    findEnvironmentByNameRepositorySpy
   )
   return {
     sut,
@@ -51,7 +57,8 @@ const makeSut = (): SutTypes => {
     validateUuidSpy,
     addEnvironmentRepositorySpy,
     addPlantEnvironmentRepositoryMock,
-    findEnvironmentByIdSpy,
+    findEnvironmentByIdRepositorySpy,
+    findEnvironmentByNameRepositorySpy,
   }
 }
 
@@ -199,7 +206,7 @@ describe('DbAddPlant UseCase', () => {
   })
 
   it('should call FindEnvironmentById with correct data', async () => {
-    const { sut, findEnvironmentByIdSpy, validateUuidSpy } = makeSut()
+    const { sut, findEnvironmentByIdRepositorySpy, validateUuidSpy } = makeSut()
     validateUuidSpy.output = true
     const environmentId = faker.string.uuid()
 
@@ -217,14 +224,14 @@ describe('DbAddPlant UseCase', () => {
       environments: [environmentId],
     })
 
-    expect(findEnvironmentByIdSpy.input).toBe(environmentId)
+    expect(findEnvironmentByIdRepositorySpy.input).toBe(environmentId)
   })
 
   it('should throw if FindEnvironmentById throws', async () => {
-    const { sut, findEnvironmentByIdSpy, validateUuidSpy } = makeSut()
+    const { sut, findEnvironmentByIdRepositorySpy, validateUuidSpy } = makeSut()
     validateUuidSpy.output = true
     jest
-      .spyOn(findEnvironmentByIdSpy, 'findById')
+      .spyOn(findEnvironmentByIdRepositorySpy, 'findById')
       .mockImplementationOnce(() => {
         throw new Error()
       })
@@ -241,6 +248,52 @@ describe('DbAddPlant UseCase', () => {
         lastDateWatering: new Date(),
       },
       environments: [faker.string.uuid()],
+    })
+
+    await expect(promise).rejects.toThrowError()
+  })
+
+  it('should call FindEnvironmentByNameRepository with correct data', async () => {
+    const { sut, findEnvironmentByNameRepositorySpy } = makeSut()
+    const environmentName = faker.word.words()
+
+    await sut.perform({
+      name: faker.word.words(),
+      description: faker.lorem.words(),
+      photo: faker.internet.url(),
+      waterTips: faker.word.words(),
+      plantWaterFrequency: {
+        description: faker.word.words(),
+        gap: faker.number.int(1),
+        time: faker.number.int(1),
+        lastDateWatering: new Date(),
+      },
+      environments: [environmentName],
+    })
+
+    expect(findEnvironmentByNameRepositorySpy.input).toBe(environmentName)
+  })
+
+  it('should throw if FindEnvironmentByNameRepository throws', async () => {
+    const { sut, findEnvironmentByNameRepositorySpy } = makeSut()
+    jest
+      .spyOn(findEnvironmentByNameRepositorySpy, 'findByName')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.perform({
+      name: faker.word.words(),
+      description: faker.lorem.words(),
+      photo: faker.internet.url(),
+      waterTips: faker.word.words(),
+      plantWaterFrequency: {
+        description: faker.word.words(),
+        gap: faker.number.int(1),
+        time: faker.number.int(1),
+        lastDateWatering: new Date(),
+      },
+      environments: [faker.word.words()],
     })
 
     await expect(promise).rejects.toThrowError()

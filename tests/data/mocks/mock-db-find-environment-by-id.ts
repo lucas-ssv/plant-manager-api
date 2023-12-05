@@ -1,7 +1,9 @@
 import { type FindEnvironmentByIdRepository } from '@/data/contracts'
 import { mockEnvironment } from '@/tests/domain/mocks'
 
-export class FindEnvironmentByIdSpy implements FindEnvironmentByIdRepository {
+export class FindEnvironmentByIdRepositorySpy
+  implements FindEnvironmentByIdRepository
+{
   input?: string
   output = mockEnvironment()
 

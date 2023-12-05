@@ -64,4 +64,20 @@ describe('SQLiteEnvironmentRepository', () => {
       expect(environmentById?.title).toBe(title)
     })
   })
+
+  describe('findByName()', () => {
+    it('should find environment by name', async () => {
+      const sut = new SQLiteEnvironmentRepository()
+      const name = faker.word.words()
+
+      await prisma.environment.create({
+        data: {
+          title: name,
+        },
+      })
+      const environment = await sut.findByName(name)
+
+      expect(environment?.title).toBe(name)
+    })
+  })
 })

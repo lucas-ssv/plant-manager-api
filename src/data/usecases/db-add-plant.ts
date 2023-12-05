@@ -8,6 +8,7 @@ import {
   type AddPlantEnvironmentRepository,
   type ValidateUuid,
   type FindEnvironmentByIdRepository,
+  type FindEnvironmentByNameRepository,
 } from '@/data/contracts'
 
 export class DbAddPlant implements AddPlant {
@@ -18,7 +19,8 @@ export class DbAddPlant implements AddPlant {
     private readonly validateUuid: ValidateUuid,
     private readonly addEnvironmentRepository: AddEnvironmentRepository,
     private readonly addPlantEnvironmentRepository: AddPlantEnvironmentRepository,
-    private readonly findEnvironmentById: FindEnvironmentByIdRepository
+    private readonly findEnvironmentByIdRepository: FindEnvironmentByIdRepository,
+    private readonly findEnvironmentByNameRepository: FindEnvironmentByNameRepository
   ) {}
 
   async perform(input: PlantParams): Promise<boolean> {
@@ -38,16 +40,27 @@ export class DbAddPlant implements AddPlant {
       for (const environment of environments) {
         const isUuid = this.validateUuid.validate(environment)
         if (!isUuid) {
-          const environmentId = await this.addEnvironmentRepository.add({
-            title: environment,
-          })
-          await this.addPlantEnvironmentRepository.add({
-            plantId,
-            environmentId,
-          })
+          const environmentExists =
+            await this.findEnvironmentByNameRepository.findByName(environment)
+          if (environmentExists === null) {
+            const environmentId = await this.addEnvironmentRepository.add({
+              title: environment,
+            })
+            await this.addPlantEnvironmentRepository.add({
+              plantId,
+              environmentId,
+            })
+          } else {
+            await this.addPlantEnvironmentRepository.add({
+              plantId,
+              environmentId: environmentExists.id,
+            })
+          }
           isValid = true
         } else {
-          const exists = await this.findEnvironmentById.findById(environment)
+          const exists = await this.findEnvironmentByIdRepository.findById(
+            environment
+          )
           if (exists !== null) {
             await this.addPlantEnvironmentRepository.add({
               plantId,
