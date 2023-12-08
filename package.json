@@ -11,8 +11,7 @@
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage",
     "lint": "eslint --ignore-path .eslintignore --no-error-on-unmatched-pattern --ext .js, .ts .",
-    "lint-staged": "npx lint-staged",
-    "prepare": "husky install"
+    "lint-staged": "npx lint-staged"
   },
   "keywords": [],
   "author": "Lucas Vieira",
@@ -31,7 +30,6 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "babel-jest": "^29.6.2",
     "babel-plugin-module-resolver": "^5.0.0",
-    "cors": "^2.8.5",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-config-standard-with-typescript": "^37.0.0",
@@ -61,6 +59,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "module-alias": "^2.2.3",
     "rimraf": "^5.0.1",
