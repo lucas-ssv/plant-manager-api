@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "ts-node-dev ./src/main/server.ts",
     "start": "node ./dist/main/server.js",
+    "migrate": "npx prisma migrate deploy --schema=./schema.prisma",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
+    "up": "npm run build && docker-compose up -d",
+    "down": "docker-compose down",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage",
